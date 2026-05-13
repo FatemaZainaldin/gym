@@ -3,14 +3,15 @@
 /* -------------------------------------------------------------------------- */
 @theme {
   /* Font family */
-  --font-sans: Geist, system-ui;
+  --font-sans: Inter, system-ui;
   --font-sans--font-feature-settings: 'salt';
 
-  --font-display: Geist, system-ui;
+  --font-display: Inter, system-ui;
   --font-display--font-feature-settings: 'salt';
 
-  --font-mono: 'Geist Mono', ui-monospace;
+  --font-mono: 'Geist Mono', ui-monospace;  /* keep mono as is */
   --font-mono--font-feature-settings: 'ss01', 'ss02', 'cv02', 'cv06';
+
 
   /* Font configuration */
   --font-smoothing: antialiased;

@@ -14,7 +14,7 @@
     "watch": "ng build --watch --configuration development",
     "format": "prettier --write \"src/**/*.{ts,html,scss,json}\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
-    "prepare": "husky install"
+    "prepare": "husky install ../.husky"
   },
   "dependencies": {
     "@angular/aria": "21.2.4",
@@ -56,6 +56,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-unused-imports": "4.4.1",
     "globals": "17.4.0",
+    "husky": "^8.0.0",
     "jsdom": "29.0.1",
     "postcss": "8.5.8",
     "prettier": "^3.8.1",
@@ -64,8 +65,7 @@
     "tailwindcss": "4.2.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.58.0",
-    "vitest": "4.1.2",
-    "husky": "^8.0.0"
+    "vitest": "4.1.2"
   },
   "engines": {
     "node": ">=24.0.0"

@@ -177,6 +177,7 @@ export class Navigation {
 
   // State
   readonly navigation = computed<NavigationItem[]>(() => {
+    
     const navItems = this.mapNavItems(this.state.navigation());
     return this.initializeExpandedState(navItems);
   });
@@ -189,6 +190,7 @@ export class Navigation {
 
   constructor() {
     // Expand active route on navigation end
+    
     effect(() => {
       this.navigationEnd();
       this.updateExpandedState();

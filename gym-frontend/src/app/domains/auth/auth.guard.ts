@@ -13,7 +13,7 @@ export const authGuard: CanActivateFn = (
   if (authState.isLoggedIn()) return true;
 
   // Not logged in → /login, but preserve the URL they were trying to reach
-  return router.createUrlTree(['/login'], {
+  return router.createUrlTree(['/auth/sign-in'], {
     queryParams: { returnUrl: state.url },
   });
 };

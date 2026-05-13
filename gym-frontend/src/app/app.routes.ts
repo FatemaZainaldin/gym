@@ -22,7 +22,7 @@ export const routes: Route[] = [
   },
   {
     path: 'admin',
-    canActivate: [authGuard],
+    // canActivate: [authGuard],
     loadChildren: () => import('./domains/admin/routes'),
   },
 

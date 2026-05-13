@@ -26,6 +26,7 @@ import { AuthService } from "../../auth.service";
     MatCheckboxModule,
     FormField,
     MatDivider,
+    
   ],
 })
 export default class AuthSignIn {
