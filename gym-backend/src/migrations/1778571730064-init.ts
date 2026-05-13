@@ -1,0 +1,126 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class Init1778571730064 implements MigrationInterface {
+    name = 'Init1778571730064'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP CONSTRAINT "FK_nav_items_parent"`);
+        await queryRunner.query(`DROP INDEX "public"."users_email_idx"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_nav_items_parentId"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "users_pkey"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "id"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "id" SERIAL NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id")`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "createdAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "updatedAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "updatedAt" TIMESTAMP NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "deletedAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "deletedAt" TIMESTAMP`);
+        await queryRunner.query(`ALTER TYPE "public"."user_role" RENAME TO "user_role_old"`);
+        await queryRunner.query(`CREATE TYPE "public"."users_role_enum" AS ENUM('admin', 'trainer', 'customer')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE "public"."users_role_enum" USING "role"::"text"::"public"."users_role_enum"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'customer'`);
+        await queryRunner.query(`DROP TYPE "public"."user_role_old"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_status" RENAME TO "user_status_old"`);
+        await queryRunner.query(`CREATE TYPE "public"."users_status_enum" AS ENUM('active', 'inactive', 'suspended')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" TYPE "public"."users_status_enum" USING "status"::"text"::"public"."users_status_enum"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" SET DEFAULT 'active'`);
+        await queryRunner.query(`DROP TYPE "public"."user_status_old"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "refreshTokenHash"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "refreshTokenHash" character varying`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "resetToken"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "resetToken" character varying`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP CONSTRAINT "nav_items_pkey"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "id"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "id" SERIAL NOT NULL`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD CONSTRAINT "PK_53ae61095dbd44d41775cccd2c3" PRIMARY KEY ("id")`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "createdAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "createdAt" TIMESTAMP NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "updatedAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "updatedAt" TIMESTAMP NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "deletedAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "deletedAt" TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "type"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "type" character varying NOT NULL DEFAULT 'basic'`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "parentId"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "parentId" integer`);
+        await queryRunner.query(`ALTER TYPE "public"."user_role" RENAME TO "user_role_old"`);
+        await queryRunner.query(`CREATE TYPE "public"."users_role_enum" AS ENUM('admin', 'trainer', 'customer')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE "public"."users_role_enum" USING "role"::"text"::"public"."users_role_enum"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'customer'`);
+        await queryRunner.query(`DROP TYPE "public"."user_role_old"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_status" RENAME TO "user_status_old"`);
+        await queryRunner.query(`CREATE TYPE "public"."users_status_enum" AS ENUM('active', 'inactive', 'suspended')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" TYPE "public"."users_status_enum" USING "status"::"text"::"public"."users_status_enum"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" SET DEFAULT 'active'`);
+        await queryRunner.query(`DROP TYPE "public"."user_status_old"`);
+        await queryRunner.query(`CREATE UNIQUE INDEX "IDX_97672ac88f789774dd47f7c8be" ON "users" ("email") `);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD CONSTRAINT "FK_03ffe2b7707ca9a7fc922508237" FOREIGN KEY ("parentId") REFERENCES "nav_items"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP CONSTRAINT "FK_03ffe2b7707ca9a7fc922508237"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_97672ac88f789774dd47f7c8be"`);
+        await queryRunner.query(`CREATE TYPE "public"."user_status_old" AS ENUM('active', 'inactive', 'suspended')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" TYPE "public"."user_status_old" USING "status"::"text"::"public"."user_status_old"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" SET DEFAULT 'active'`);
+        await queryRunner.query(`DROP TYPE "public"."users_status_enum"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_status_old" RENAME TO "user_status"`);
+        await queryRunner.query(`CREATE TYPE "public"."user_role_old" AS ENUM('admin', 'trainer', 'customer')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE "public"."user_role_old" USING "role"::"text"::"public"."user_role_old"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'customer'`);
+        await queryRunner.query(`DROP TYPE "public"."users_role_enum"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_role_old" RENAME TO "user_role"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "parentId"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "parentId" uuid`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "type"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "type" character varying(20) NOT NULL DEFAULT 'basic'`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "deletedAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "deletedAt" TIMESTAMP WITH TIME ZONE`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "updatedAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "createdAt"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP CONSTRAINT "PK_53ae61095dbd44d41775cccd2c3"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" DROP COLUMN "id"`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD "id" uuid NOT NULL DEFAULT uuid_generate_v4()`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD CONSTRAINT "nav_items_pkey" PRIMARY KEY ("id")`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "resetToken"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "resetToken" character varying(255)`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "refreshTokenHash"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "refreshTokenHash" character varying(255)`);
+        await queryRunner.query(`CREATE TYPE "public"."user_status_old" AS ENUM('active', 'inactive', 'suspended')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" TYPE "public"."user_status_old" USING "status"::"text"::"public"."user_status_old"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "status" SET DEFAULT 'active'`);
+        await queryRunner.query(`DROP TYPE "public"."users_status_enum"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_status_old" RENAME TO "user_status"`);
+        await queryRunner.query(`CREATE TYPE "public"."user_role_old" AS ENUM('admin', 'trainer', 'customer')`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" DROP DEFAULT`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" TYPE "public"."user_role_old" USING "role"::"text"::"public"."user_role_old"`);
+        await queryRunner.query(`ALTER TABLE "users" ALTER COLUMN "role" SET DEFAULT 'customer'`);
+        await queryRunner.query(`DROP TYPE "public"."users_role_enum"`);
+        await queryRunner.query(`ALTER TYPE "public"."user_role_old" RENAME TO "user_role"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "deletedAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "deletedAt" TIMESTAMP WITH TIME ZONE`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "updatedAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "createdAt"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433"`);
+        await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "id"`);
+        await queryRunner.query(`ALTER TABLE "users" ADD "id" uuid NOT NULL DEFAULT uuid_generate_v4()`);
+        await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id")`);
+        await queryRunner.query(`CREATE INDEX "IDX_nav_items_parentId" ON "nav_items" ("parentId") `);
+        await queryRunner.query(`CREATE UNIQUE INDEX "users_email_idx" ON "users" ("email") WHERE ("deletedAt" IS NULL)`);
+        await queryRunner.query(`ALTER TABLE "nav_items" ADD CONSTRAINT "FK_nav_items_parent" FOREIGN KEY ("parentId") REFERENCES "nav_items"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
+    }
+
+}
