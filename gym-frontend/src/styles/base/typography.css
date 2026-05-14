@@ -37,6 +37,24 @@
 }
 
 
+/*Font Family Change*/
+/* Regular */
+@font-face {
+  font-family: 'Codec Pro';
+  src: url('/fonts/codec/Codec-Pro-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+/* Bold */
+@font-face {
+  font-family: 'Codec Pro';
+  src: url('/fonts/codec/Codec-Pro-Bold.woff2') format('woff2');
+  font-weight: 600;
+  font-style:normal;
+}
+
 /* -------------------------------------------------------------------------- */
 /* Base typographic styles                                                    */
 /* -------------------------------------------------------------------------- */

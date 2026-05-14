@@ -14,22 +14,14 @@ import { User } from '@/app/domains/admin/layout/ui/user';
     <!-- Header -->
     <div class="relative flex items-center gap-x-2.5 pt-5 pr-4 pb-0 pl-6">
       <!-- Logo -->
-      <img
-        src="/images/logo/logo.svg"
-        class="size-8"
-        alt="Fuse logo"
-      />
+    
 
-      <div class="flex flex-col">
-        <div
-          class="text-on-surface text-lg leading-none font-bold tracking-wider"
-        >
-          FUSE
-        </div>
-        <div class="font-mono text-2xs leading-3 font-medium tracking-tighter">
-          Angular
-        </div>
-      </div>
+<div class="flex items-baseline gap-0.5">
+  <span class="font-black text-4xl tracking-tighter text-primary-500"
+        style="font-family:'Montserrat',sans-serif">G</span>
+  <span class="font-semibold text-2xl tracking-tight text-primary-500"
+        style="font-family:'Montserrat',sans-serif">ymly</span>
+</div>
     </div>
 
     <!-- Navigation -->

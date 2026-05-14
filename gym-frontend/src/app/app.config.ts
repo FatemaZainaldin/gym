@@ -49,9 +49,13 @@ export const appConfig: ApplicationConfig = {
     provideIcons(),
     provideTheming({
       scheme:  'light',
-      primary: '#f97316',
+      primary: '#10B981',
       error:   '#dc2626',
     }),
+  // #7DAA8A — primary buttons, active state, key actions
+  // #5C8A6B — hover, sidebar active, borders
+  // #E8F4EE — badge backgrounds, card surfaces
+  // #3A6B4A — text on light green surfaces
 
     // ── Transloco ────────────────────────────────────────────────────────
     provideTransloco({

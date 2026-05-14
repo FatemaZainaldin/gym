@@ -3,13 +3,13 @@
 /* -------------------------------------------------------------------------- */
 @theme {
   /* Font family */
-  --font-sans: Inter, system-ui;
+  --font-sans: 'Codec Pro', system-ui;
   --font-sans--font-feature-settings: 'salt';
 
-  --font-display: Inter, system-ui;
+  --font-display: 'Codec Pro', system-ui;
   --font-display--font-feature-settings: 'salt';
 
-  --font-mono: 'Geist Mono', ui-monospace;  /* keep mono as is */
+  --font-mono: ui-monospace, monospace;
   --font-mono--font-feature-settings: 'ss01', 'ss02', 'cv02', 'cv06';
 
 

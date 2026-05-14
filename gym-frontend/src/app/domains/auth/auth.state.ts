@@ -30,9 +30,9 @@ export interface AuthUser {
 // ── Storage Keys ───────────────────────────────────────────────────────────────
 
 const KEYS = {
-  USER:    'fitpro_user',
-  TOKEN:   'fitpro_token',
-  EXPIRES: 'fitpro_expires',
+  USER:    'session_user',
+  TOKEN:   'session_token',
+  EXPIRES: 'session_expires',
 } as const;
 
 // ── Service ────────────────────────────────────────────────────────────────────
