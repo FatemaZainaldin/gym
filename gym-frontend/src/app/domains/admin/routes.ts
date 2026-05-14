@@ -9,6 +9,44 @@ const routes: Routes = [
       // Redirect empty path to '/auth/sign-in'
       { path: "", pathMatch: "full", redirectTo: "/auth/sign-in" },
 
+      //-----------------------------------------------------------------------
+      // New Routes 
+      // ----------------------------------------------------------------------
+
+       {
+        path: "dashboard",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+
+          {
+        path: "members",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+
+           {
+        path: "trainers",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+           {
+        path: "Classes",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+           {
+        path: "payments",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+        {
+        path: "reports",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+       {
+        path: "settings",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
+       {
+        path: "notifications",
+        loadChildren: () => import("./modules/dashboards/routes"),
+      },
       // -----------------------------------------------------------------------
       // Dashboards
       // -----------------------------------------------------------------------

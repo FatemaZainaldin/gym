@@ -46,7 +46,7 @@ export interface NavigationItem {
       @for (section of navigation(); track section.id) {
         <div class="flex flex-col px-4">
           <!-- Section title -->
-          <div class="px-2.5 py-1.5 text-sm font-semibold text-blue-400">
+          <div class="px-2.5 py-1.5 text-md font-normal text-neutral-600 cursor-pointer">
             {{ section.label }}
 
             <!-- Section description -->

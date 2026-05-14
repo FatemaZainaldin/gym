@@ -1,5 +1,6 @@
 import { Component, inject, signal } from "@angular/core";
 import {
+  disabled,
   email,
   form,
   FormField,
@@ -7,6 +8,7 @@ import {
   submit,
 } from "@angular/forms/signals";
 import { MatButtonModule } from "@angular/material/button";
+import { MatCard } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
@@ -17,6 +19,7 @@ import { Router, RouterLink } from "@angular/router";
   selector: "auth-sign-up",
   templateUrl: "./sign-up.html",
   imports: [
+    MatCard,
     RouterLink,
     MatFormFieldModule,
     MatInputModule,
@@ -26,24 +29,34 @@ import { Router, RouterLink } from "@angular/router";
     FormField,
   ],
 })
-export default class AuthSignUp {
+export default class AuthSignUp  {
+
+  constructor() {
+    this.signUpForm.role().disabled();
+  }
   // Dependencies
   private router = inject(Router);
-
+  disableField = signal(true);
   // State
   protected signUpFormModel = signal({
-    name: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
-    company: "",
+    role: "customer"
+
   });
-  protected signUpForm = form(this.signUpFormModel, (form) => {
-    required(form.name, { message: "You must enter your name" });
-    required(form.email, { message: "You must enter an email address" });
-    email(form.email, { message: "You must enter a valid email address" });
-    required(form.password, { message: "You must enter a password" });
-    required(form.company, { message: "You must enter your company name" });
-  });
+ protected signUpForm = form(this.signUpFormModel, (schemaPath) => {
+  required(schemaPath.first_name, { message: "You must enter your name" });
+  required(schemaPath.last_name, { message: "You must enter your company name" });
+  required(schemaPath.email, { message: "You must enter an email address" });
+  email(schemaPath.email, { message: "You must enter a valid email address" });
+  required(schemaPath.password, { message: "You must enter a password" });
+  required(schemaPath.role, { message: "You must select the role" });
+  disabled(schemaPath.role);
+});
+
+  
 
   signUp(event: Event) {
     event.preventDefault();
@@ -53,4 +66,5 @@ export default class AuthSignUp {
       this.router.navigateByUrl("/auth/sign-in");
     });
   }
+
 }

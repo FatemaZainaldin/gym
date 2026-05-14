@@ -21,7 +21,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
       <mat-card class="flex flex-row">
         <div class="flex w-full max-w-md flex-col p-8 sm:p-12">
           <!-- Logo -->
-          <img class="w-12" src="/images/logo/logo.svg" alt="Fuse logo" />
+          <img class="w-12" src="/assets/logo.png" alt="Fuse logo" />
 
           <!-- Title -->
           <div
@@ -98,7 +98,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
             <g class="text-gray-700 opacity-25" fill="none" stroke="currentColor" stroke-width="100">
               <circle r="234" cx="196" cy="23"></circle>
               <circle r="234" cx="790" cy="491"></circle>
-            </g>
+             </g>
           </svg>
           <!-- Dots -->
           <!-- prettier-ignore -->
