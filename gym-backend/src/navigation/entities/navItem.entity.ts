@@ -28,6 +28,11 @@ export class NavItem extends BaseEntity {
   @Column({ default: true })
   isActive: boolean;
 
+
+  @Column({ default: true })
+  isDefault: boolean;
+
+
   // Which roles can see this item
   @Column({ type: 'simple-array' })
   roles: UserRole[];
@@ -41,7 +46,7 @@ export class NavItem extends BaseEntity {
   // Explicitly define parentId column as UUID
   @Column({ type: 'uuid', nullable: true })
   parentId: string;  // ← Add this explicitly
-  
+
   @TreeParent()
   parent?: NavItem;
 }

@@ -21,10 +21,10 @@
 
           <mat-form-field class="w-full">
             <mat-label>First Name</mat-label>
-            <input matInput id="first_name" [formField]="signUpForm.first_name" />
+            <input matInput id="firstName" [formField]="signUpForm.firstName" />
             <mat-error>
-              @if (signUpForm.first_name().touched() && signUpForm.first_name().invalid()) {
-              @for (error of signUpForm.first_name().errors(); track error) {
+              @if (signUpForm.firstName().touched() && signUpForm.firstName().invalid()) {
+              @for (error of signUpForm.firstName().errors(); track error) {
               {{ error.message }}
               }
               }
@@ -33,10 +33,10 @@
 
           <mat-form-field class="w-full">
             <mat-label>Last Name</mat-label>
-            <input matInput id="last_name" [formField]="signUpForm.last_name" />
+            <input matInput id="lastName" [formField]="signUpForm.lastName" />
             <mat-error>
-              @if (signUpForm.last_name().touched() && signUpForm.last_name().invalid()) {
-              @for (error of signUpForm.last_name().errors(); track error) {
+              @if (signUpForm.lastName().touched() && signUpForm.lastName().invalid()) {
+              @for (error of signUpForm.lastName().errors(); track error) {
               {{ error.message }}
               }
               }
@@ -105,7 +105,7 @@
 
     <!-- ── RIGHT — Fixed image, no scroll ── -->
     <div class="relative hidden md:block md:w-3/5 flex-shrink-0 h-full">
-      <img src="/assets/gym_login_panel.png" alt="" class="absolute inset-0 h-full w-full object-cover"
+      <img src="/assets/gym_login_man.png" alt="" class="absolute inset-0 h-full w-full object-cover"
         aria-hidden="true" />
     </div>
 
