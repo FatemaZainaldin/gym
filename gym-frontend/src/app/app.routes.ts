@@ -1,34 +1,34 @@
 import { Route } from '@angular/router';
 import { authGuard } from './domains/auth/auth.guard';
+import { noAuthGuard } from './domains/auth/no-auth.gaurd';
+import { wildcardGuard } from './domains/auth/wild-card.gaurd';
 
 export const routes: Route[] = [
-  // Website routes
-  {
-    path: 'home',
-    loadChildren: () => import('./domains/website/routes'),
-  },
-
-  // Auth
-  {
-    path: 'auth',
-    loadChildren: () => import('./domains/auth/routes'),
-  },
-
-  // Admin
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'admin',
+    canActivate: [wildcardGuard],  
+    loadChildren: () => import('./domains/auth/routes'),
+  },
+  {
+    path: 'auth',
+    canActivate: [noAuthGuard],
+    loadChildren: () => import('./domains/auth/routes'),
   },
   {
     path: 'admin',
     canActivate: [authGuard],
-    loadChildren: () => import('./domains/admin/routes'),
+    loadChildren: () => import('./features/admin/routes'),
+  },
+  {
+    path: 'customer',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/customer/routes'),
   },
 
-  // Coming soon
   {
-    path: 'coming-soon',
-    loadChildren: () => import('./domains/coming-soon/routes'),
+    path: '**',
+    canActivate: [wildcardGuard],
+    loadChildren: () => import('./domains/auth/routes'),
   },
 ];

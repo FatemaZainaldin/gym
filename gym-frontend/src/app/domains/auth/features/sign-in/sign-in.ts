@@ -13,6 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../auth.service";
+import { AuthState } from "../../auth.state";
 
 @Component({
   selector: "auth-sign-in",
@@ -26,12 +27,13 @@ import { AuthService } from "../../auth.service";
     MatCheckboxModule,
     FormField,
     MatDivider,
-    
+
   ],
 })
 export default class AuthSignIn {
   // Dependencies
   private router = inject(Router);
+  private state = inject(AuthState);
   private authService = inject(AuthService);
 
   // State
@@ -50,8 +52,12 @@ export default class AuthSignIn {
     event.preventDefault();
 
     this.authService.login(this.signInFormModel()).subscribe({
-      next: () => {
-           
+      next: (res) => {
+        const module = this.state?.user()?.modules?.find(module => module.isDefault);
+        if (module?.link) {
+          this.router.navigateByUrl(module.link)
+        }
+
       },
 
       error: () => {

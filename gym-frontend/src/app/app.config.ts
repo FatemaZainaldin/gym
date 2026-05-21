@@ -1,27 +1,37 @@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
+  inject,
   isDevMode,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { provideClientHydration, withIncrementalHydration } from '@angular/platform-browser';
 import { provideRouter, withComponentInputBinding, withInMemoryScrolling } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
-import { provideIcons }    from '@/app/core/icons/provider';
-import { provideTheming }  from '@/app/core/theming';
+import { provideIcons } from '@/app/core/icons/provider';
+import { provideTheming } from '@/app/core/theming';
 import { TranslocoHttpLoader } from '@/app/core/transloco/transloco-http-loader';
-import { routes }          from './app.routes';
-import { jwtInterceptor }  from './domains/auth/jwt.interceptor';
+import { routes } from './app.routes';
+import { loadingInterceptor } from './core/loader/loading.interceptor';
+import { provideLocalStorage } from './core/local-storage';
+import { AuthState } from './domains/auth/auth.state';
+import { jwtInterceptor } from './domains/auth/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-
+    provideLocalStorage(),
+    provideAppInitializer(async () => {
+      const authState = inject(AuthState);
+      await authState.init();
+    }),
     // ── HTTP — must be first ──────────────────────────────────────────────
     provideHttpClient(
       withFetch(),
-      withInterceptors([jwtInterceptor]),
+      withInterceptors([jwtInterceptor, loadingInterceptor]),
     ),
 
     // ── Router ───────────────────────────────────────────────────────────
@@ -32,7 +42,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // ── Remove provideClientHydration entirely ───────────────────────────
-    // provideClientHydration(withIncrementalHydration()),  ← REMOVED
+    provideClientHydration(withIncrementalHydration()),
     // This caused the task tracking error + breaks sessionStorage
 
     // ── Remove APP_INITIALIZER ───────────────────────────────────────────
@@ -40,7 +50,7 @@ export const appConfig: ApplicationConfig = {
 
     // ── Material ─────────────────────────────────────────────────────────
     {
-      provide:  MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { subscriptSizing: 'dynamic' },
     },
     provideNativeDateAdapter(),
@@ -48,25 +58,25 @@ export const appConfig: ApplicationConfig = {
     // ── Core ─────────────────────────────────────────────────────────────
     provideIcons(),
     provideTheming({
-      scheme:  'light',
+      scheme: 'light',
       primary: '#10B981',
-      error:   '#dc2626',
+      error: '#dc2626',
     }),
-  // #7DAA8A — primary buttons, active state, key actions
-  // #5C8A6B — hover, sidebar active, borders
-  // #E8F4EE — badge backgrounds, card surfaces
-  // #3A6B4A — text on light green surfaces
+    // #7DAA8A — primary buttons, active state, key actions
+    // #5C8A6B — hover, sidebar active, borders
+    // #E8F4EE — badge backgrounds, card surfaces
+    // #3A6B4A — text on light green surfaces
 
     // ── Transloco ────────────────────────────────────────────────────────
     provideTransloco({
       config: {
         availableLangs: [
           { id: 'en', label: 'English' },
-          { id: 'ar', label: 'Arabic'  },
+          { id: 'ar', label: 'Arabic' },
         ],
-        defaultLang:         'en',
+        defaultLang: 'en',
         reRenderOnLangChange: true,
-        prodMode:            !isDevMode(),
+        prodMode: !isDevMode(),
       },
       loader: TranslocoHttpLoader,
     }),

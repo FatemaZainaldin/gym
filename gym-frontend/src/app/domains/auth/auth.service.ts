@@ -7,15 +7,15 @@ import { AuthState, AuthUser } from "./auth.state";
 
 
 interface LoginResponse {
-  accessToken:   string;
+  accessToken: string;
   accessExpires: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http  = inject(HttpClient);
+  private http = inject(HttpClient);
   private router = inject(Router);
-  private state  = inject(AuthState);
+  private state = inject(AuthState);
 
   readonly API = `${environment.apiUrl}/auth`;
 
@@ -34,9 +34,36 @@ export class AuthService {
     return this.http
       .get<AuthUser>(`${this.API}/me`, { withCredentials: true })
       .pipe(
-        tap(user => this.state.setUser(user))
+        tap(user => {
+          const sortedModules = [...user.modules].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+          user = {
+            ...user,
+            modules: sortedModules
+          }
+          this.state.setUser(user);
+
+
+        })
       );
   }
+
+  register(body: any): Observable<any> {
+    return this.http
+      .post<any>(`${this.API}/signup`, body);
+  }
+
+  forgotPassword(body: { email: string }): Observable<any> {
+    return this.http
+      .post<any>(`${this.API}/forgot-password`, body);
+
+  }
+  resetPassword(body: { password: string }): Observable<any> {
+    return this.http
+      .post<any>(`${this.API}/reset-password`, { ...body, token: this.state.token() });
+
+  }
+
+
 
   refresh(): Observable<void> {
     return this.http

@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
+import { AuthService } from "../../auth.service";
 
 @Component({
   selector: "auth-reset-password",
@@ -30,6 +31,7 @@ import { Router } from "@angular/router";
 export default class AuthResetPassword {
   // Dependencies
   private router = inject(Router);
+  private authService = inject(AuthService)
 
   // State
   protected resetPasswordFormModel = signal({
@@ -60,10 +62,14 @@ export default class AuthResetPassword {
 
   resetPassword(event: Event) {
     event.preventDefault();
-
-    submit(this.resetPasswordForm, async () => {
-      // Navigate to a route, demo purposes only
+    this.authService.resetPassword({password: this.resetPasswordFormModel().password}).subscribe({
+      next: () => {
       this.router.navigateByUrl("/auth/sign-in");
+      },
+
+      error: () => {
+        /* empty */
+      },
     });
   }
 }

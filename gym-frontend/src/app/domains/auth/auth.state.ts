@@ -1,171 +1,120 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { StorageService } from '../services/storage.service';
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+// ── Types ──────────────────────────────────────────────────────────────────
 
 export interface NavItem {
-  id_key:       string;
-  title:        string;
-  icon?:        string;
-  link?:        string;
-  route?:       string;
-  type:         'basic' | 'collapsable' | 'group' | 'divider';
-  badge?:       string;
-  section?:     string;
+  id_key: string;
+  isDefault?:boolean;
+  order?:number;
+  title: string;
+  icon?: string;
+  link?: string;
+  route?: string;
+  type: 'basic' | 'collapsable' | 'group' | 'divider';
+  badge?: string;
+  section?: string;
   sectionLabel?: string;
-  disabled?:    boolean;
-  expanded?:    boolean;
-  children?:    NavItem[];
+  disabled?: boolean;
+  expanded?: boolean;
+  children?: NavItem[];
 }
 
 export interface AuthUser {
-  id:         string;
-  email:      string;
-  firstName:  string;
-  lastName:   string;
-  role:       'admin' | 'trainer' | 'customer';
-  avatar?:    string;
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'admin' | 'trainer' | 'customer';
+  avatar?: string;
   modules: NavItem[];
 }
 
-// ── Storage Keys ───────────────────────────────────────────────────────────────
+// ── Storage Keys ───────────────────────────────────────────────────────────
 
 const KEYS = {
-  USER:    'session_user',
-  TOKEN:   'session_token',
+  USER: 'session_user',
+  TOKEN: 'session_token',
   EXPIRES: 'session_expires',
 } as const;
 
-// ── Service ────────────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────────
 
 @Injectable({ providedIn: 'root' })
 export class AuthState {
 
-  // ── SSR guard ───────────────────────────────────────────────────────────────
-  private get isBrowser(): boolean {
-    return typeof window !== 'undefined'
-        && typeof sessionStorage !== 'undefined';
-  }
+  // Private writable signals — all start null, restored in constructor
+  private readonly _user = signal<AuthUser | null>(null);
+  private readonly _token = signal<string | null>(null);
+  private readonly _expires = signal<number | null>(null);
 
-  // ── Private writable signals — seeded from sessionStorage on boot ───────────
-  private readonly _user    = signal<AuthUser | null>(
-    this.read<AuthUser>(KEYS.USER)
-  );
-
-  private readonly _token   = signal<string | null>(
-    this.isBrowser ? sessionStorage.getItem(KEYS.TOKEN) : null
-  );
-
-  private readonly _expires = signal<number | null>(
-    this.read<number>(KEYS.EXPIRES)
-  );
-
-  // ── Public read-only signals ────────────────────────────────────────────────
-
-  /** The full authenticated user object (null if not logged in) */
+  // ── Public read-only signals ─────────────────────────────────────────────
   readonly user = this._user.asReadonly();
-
-  /** Raw JWT access token string */
   readonly token = this._token.asReadonly();
-
-  /** True when a user is loaded in memory */
   readonly isLoggedIn = computed(() => !!this._user());
-
-  /** The user's role: 'admin' | 'trainer' | 'customer' | null */
   readonly role = computed(() => this._user()?.role ?? null);
-
-  /** Navigation items for the current user's role */
   readonly navigation = computed(() => this._user()?.modules ?? []);
-
-  /** Unix timestamp when the access token expires */
-  readonly tokenExpiry = computed(() => this._expires());
-
-  /** Full display name */
   readonly fullName = computed(() => {
     const u = this._user();
     if (!u) return '';
     return `${u.firstName} ${u.lastName}`.trim();
   });
-
-  /** First name only — useful for greetings */
   readonly firstName = computed(() => this._user()?.firstName ?? '');
-
-  /** Avatar URL — falls back to null */
   readonly avatar = computed(() => this._user()?.avatar ?? null);
-
-  /**
-   * True when the access token is expired or will expire
-   * within the next 60 seconds (used by the JWT interceptor
-   * to trigger a proactive refresh).
-   */
+  readonly tokenExpiry = computed(() => this._expires());
   readonly tokenExpiredOrExpiring = computed(() => {
     const expires = this._expires();
     if (!expires) return true;
-    const nowPlusSixty = Math.floor(Date.now() / 1000) + 60;
-    return expires < nowPlusSixty;
+    return expires < Math.floor(Date.now() / 1000) + 60;
   });
 
-  // ── Setters ─────────────────────────────────────────────────────────────────
-
-  /**
-   * Called after a successful login or GET /auth/me response.
-   * Writes to the signal AND persists to sessionStorage.
-   */
-  setUser(user: AuthUser): void {
-    this._user.set(user);
-    this.persist(KEYS.USER, user);
+  // ── Constructor — restore from sessionStorage ────────────────────────────
+  constructor(private storage: StorageService) {
   }
 
-  /**
-   * Called after login or token refresh.
-   * Stores the raw access token and its expiry timestamp.
-   */
+  async init(): Promise<void> {
+    this.restore();
+  }
+
+  // ── Setters ──────────────────────────────────────────────────────────────
+
+  setUser(user: AuthUser): void {
+    /* eslint-disable no-debugger */
+    this._user.set(user);
+    this.storage.setItem(KEYS.USER, JSON.stringify(user));
+  }
+
   setToken(token: string, expires: number): void {
     this._token.set(token);
     this._expires.set(expires);
-
-    if (this.isBrowser) {
-      sessionStorage.setItem(KEYS.TOKEN,   token);
-      sessionStorage.setItem(KEYS.EXPIRES, String(expires));
-    }
+    this.storage.setItem(KEYS.TOKEN, token);
+    this.storage.setItem(KEYS.EXPIRES, String(expires));
   }
 
-  /**
-   * Called on logout or when the refresh token is rejected.
-   * Clears all signals and removes all sessionStorage entries.
-   */
   clear(): void {
     this._user.set(null);
     this._token.set(null);
     this._expires.set(null);
-
-    if (this.isBrowser) {
-      sessionStorage.removeItem(KEYS.USER);
-      sessionStorage.removeItem(KEYS.TOKEN);
-      sessionStorage.removeItem(KEYS.EXPIRES);
-    }
+    this.storage.removeItem(KEYS.USER);
+    this.storage.removeItem(KEYS.TOKEN);
+    this.storage.removeItem(KEYS.EXPIRES);
   }
 
-  // ── Private helpers ─────────────────────────────────────────────────────────
+  // ── Private ──────────────────────────────────────────────────────────────
 
-  /** Read and JSON-parse a value from sessionStorage safely */
-  private read<T>(key: string): T | null {
-    if (!this.isBrowser) return null;
+  public restore(): void {
     try {
-      const raw = sessionStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as T) : null;
-    } catch {
-      return null;
-    }
-  }
+      const rawUser = this.storage.getItem(KEYS.USER);
+      const rawToken = this.storage.getItem(KEYS.TOKEN);
+      const rawExpires = this.storage.getItem(KEYS.EXPIRES);
 
-  /** JSON-stringify and write a value to sessionStorage safely */
-  private persist(key: string, value: unknown): void {
-    if (!this.isBrowser) return;
-    try {
-      sessionStorage.setItem(key, JSON.stringify(value));
-    } catch {
-      // sessionStorage can throw if storage quota is exceeded
-      console.warn(`[AuthState] Failed to persist key "${key}" to sessionStorage`);
+      if (rawUser) this._user.set(JSON.parse(rawUser));
+      if (rawToken) this._token.set(rawToken);
+      if (rawExpires) this._expires.set(Number(rawExpires));
+
+    } catch (e) {
+      console.warn('[AuthState] Failed to restore from storage:', e);
+      this.clear();
     }
   }
 }
