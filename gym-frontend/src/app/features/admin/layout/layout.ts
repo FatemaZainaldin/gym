@@ -12,7 +12,6 @@ import { LanguageSwitcher } from '@/app/features/admin/layout/ui/language-switch
 import { Notifications } from '@/app/features/admin/layout/ui/notifications';
 import { SchemeSwitcher } from '@/app/features/admin/layout/ui/scheme-switcher';
 import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
-import { LoadingBarComponent } from '@/app/core/loader/loading.bar.compoant';
 
 @Component({
   selector: 'admin-layout',
@@ -27,10 +26,9 @@ import { LoadingBarComponent } from '@/app/core/loader/loading.bar.compoant';
     SchemeSwitcher,
     Notifications,
     LanguageSwitcher,
-    LoadingBarComponent
+    
   ],
   template: `
-  <app-loading-bar />
 
     <mat-sidenav-container>
       <mat-sidenav

@@ -1,12 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { StorageService } from '../services/storage.service';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
 export interface NavItem {
   id_key: string;
-  isDefault?:boolean;
-  order?:number;
+  isDefault?: boolean;
+  order?: number;
   title: string;
   icon?: string;
   link?: string;
@@ -117,4 +117,6 @@ export class AuthState {
       this.clear();
     }
   }
+
+  
 }

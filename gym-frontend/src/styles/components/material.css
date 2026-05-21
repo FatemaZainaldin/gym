@@ -1131,6 +1131,24 @@
     var(--color-neutral-800)
   );
 
+  .mat-mdc-snack-bar-container {
+    &.error {
+        --mat-snack-bar-container-color: #dc2626 !important;
+    }
+    &.success {
+        --mat-snack-bar-container-color: #036103  !important;
+    }
+     &.warning {
+        --mat-snack-bar-container-color: #d97706 !important;
+    }
+        &.info {
+        --mat-snack-bar-container-color: #2563eb !important;
+    }
+}
+
+.mat-mdc-snack-bar-container .mat-mdc-button {
+  color: inherit !important;
+}
   /* ------------------------------------------------------------------------ */
   /* Timepicker                                                               */
   /* ------------------------------------------------------------------------ */

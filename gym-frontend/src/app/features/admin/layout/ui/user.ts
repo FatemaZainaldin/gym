@@ -3,7 +3,7 @@ import { MatPseudoCheckbox } from '@angular/material/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/list';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Scheme, Theming } from '@/app/core/theming';
 import { AuthService } from '@/app/domains/auth/auth.service';
 
@@ -16,7 +16,6 @@ import { AuthService } from '@/app/domains/auth/auth.service';
     MatMenuItem,
     MatPseudoCheckbox,
     MatMenuTrigger,
-    RouterLink,
   ],
   template: `
     <button

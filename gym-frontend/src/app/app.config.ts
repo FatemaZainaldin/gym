@@ -19,6 +19,7 @@ import { loadingInterceptor } from './core/loader/loading.interceptor';
 import { provideLocalStorage } from './core/local-storage';
 import { AuthState } from './domains/auth/auth.state';
 import { jwtInterceptor } from './domains/auth/jwt.interceptor';
+import { errorInterceptor } from './core/toast/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,7 +32,7 @@ export const appConfig: ApplicationConfig = {
     // ── HTTP — must be first ──────────────────────────────────────────────
     provideHttpClient(
       withFetch(),
-      withInterceptors([jwtInterceptor, loadingInterceptor]),
+      withInterceptors([jwtInterceptor, loadingInterceptor,errorInterceptor]),
     ),
 
     // ── Router ───────────────────────────────────────────────────────────
@@ -42,7 +43,7 @@ export const appConfig: ApplicationConfig = {
     ),
 
     // ── Remove provideClientHydration entirely ───────────────────────────
-    provideClientHydration(withIncrementalHydration()),
+    // provideClientHydration(withIncrementalHydration()),
     // This caused the task tracking error + breaks sessionStorage
 
     // ── Remove APP_INITIALIZER ───────────────────────────────────────────

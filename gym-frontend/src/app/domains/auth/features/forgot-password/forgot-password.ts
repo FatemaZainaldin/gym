@@ -4,7 +4,6 @@ import {
   form,
   FormField,
   required,
-  submit,
 } from "@angular/forms/signals";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCard } from "@angular/material/card";
@@ -14,6 +13,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
 import { AuthService } from "../../auth.service";
+import { ToastService } from "@/app/core/toast/toast.service";
 
 @Component({
   selector: "auth-forgot-password",
@@ -31,6 +31,7 @@ import { AuthService } from "../../auth.service";
 export default class AuthForgotPassword {
   // Dependencies
   private router = inject(Router);
+  private toast = inject(ToastService)
   private authService = inject(AuthService);
 
   // State
@@ -45,12 +46,13 @@ export default class AuthForgotPassword {
   forgotPassword(event: Event) {
     event.preventDefault();
     this.authService.forgotPassword(this.forgotPasswordFormModel()).subscribe({
-      next: () => {
+      next: (res) => {
+        this.toast.showMessage(res?.message, 'success')
         this.router.navigateByUrl("/auth/reset-password");
       },
 
-      error: () => {
-        /* empty */
+      error: (err) => {
+        this.toast.showMessage(err?.error?.message, 'success')
       },
     });
 
