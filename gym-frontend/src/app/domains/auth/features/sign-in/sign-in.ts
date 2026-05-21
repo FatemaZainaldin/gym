@@ -11,9 +11,9 @@ import { MatDivider } from "@angular/material/divider";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
-import { Router, RouterLink } from "@angular/router";
+import {  RouterLink } from "@angular/router";
+import { ToastService } from "@/app/core/toast/toast.service";
 import { AuthService } from "../../auth.service";
-import { AuthState } from "../../auth.state";
 
 @Component({
   selector: "auth-sign-in",
@@ -32,8 +32,7 @@ import { AuthState } from "../../auth.state";
 })
 export default class AuthSignIn {
   // Dependencies
-  private router = inject(Router);
-  private state = inject(AuthState);
+  private toast = inject(ToastService);
   private authService = inject(AuthService);
 
   // State
@@ -52,16 +51,14 @@ export default class AuthSignIn {
     event.preventDefault();
 
     this.authService.login(this.signInFormModel()).subscribe({
-      next: (res) => {
-        const module = this.state?.user()?.modules?.find(module => module.isDefault);
-        if (module?.link) {
-          this.router.navigateByUrl(module.link)
-        }
-
+      next: async (res) => {
+        this.toast.showMessage(res.message,'success')
+        await this.authService.redirectByRole();
       },
 
-      error: () => {
-        /* empty */
+      error: (err) => {
+        this.toast.showMessage(err?.error?.message,'error')
+
       },
     });
   }

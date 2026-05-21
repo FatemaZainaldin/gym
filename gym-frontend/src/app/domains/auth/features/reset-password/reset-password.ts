@@ -13,6 +13,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
+import { ToastService } from "@/app/core/toast/toast.service";
 import { AuthService } from "../../auth.service";
 
 @Component({
@@ -31,7 +32,8 @@ import { AuthService } from "../../auth.service";
 export default class AuthResetPassword {
   // Dependencies
   private router = inject(Router);
-  private authService = inject(AuthService)
+  private toast= inject(ToastService);
+  private authService = inject(AuthService);
 
   // State
   protected resetPasswordFormModel = signal({
@@ -62,13 +64,15 @@ export default class AuthResetPassword {
 
   resetPassword(event: Event) {
     event.preventDefault();
-    this.authService.resetPassword({password: this.resetPasswordFormModel().password}).subscribe({
-      next: () => {
-      this.router.navigateByUrl("/auth/sign-in");
+    this.authService.resetPassword({ password: this.resetPasswordFormModel().password }).subscribe({
+      next: (res) => {
+        this.toast.showMessage(res?.message, 'success')
+        this.router.navigateByUrl("/auth/sign-in");
+
       },
 
-      error: () => {
-        /* empty */
+      error: (err) => {
+        this.toast.showMessage(err.error?.message, 'error')
       },
     });
   }
