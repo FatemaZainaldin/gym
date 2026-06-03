@@ -11,9 +11,10 @@ export enum UserRole {
 }
 
 export enum UserStatus {
-  ACTIVE = 'active',
+ ACTIVE = 'active',
   INACTIVE = 'inactive',
   SUSPENDED = 'suspended',
+  ON_LEAVE = 'on_leave'
 }
 
 @Entity('users')

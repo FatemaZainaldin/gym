@@ -19,7 +19,7 @@ export class NavItem extends BaseEntity {
   @Column({ length: 300, nullable: true })
   link?: string;              // router link e.g. '/admin/members'
 
-  @Column({ default: 'basic' })
+  @Column({ length: 20, default: 'basic' })
   type: 'basic' | 'collapsable' | 'group' | 'divider';
 
   @Column({ default: 0 })

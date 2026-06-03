@@ -1,0 +1,59 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+  <!-- PAGE HEADER -->
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-4 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    <div class="flex items-center gap-4">
+      <button mat-icon-button [routerLink]="['../']">
+        <mat-icon svgIcon="arrow-left"></mat-icon>
+      </button>
+      <div>
+        <div class="text-4xl font-extrabold tracking-tight leading-none">Add new trainer</div>
+        <div class="ml-0.5 font-medium text-secondary">Complete all steps to create the trainer profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPPER -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <app-stepper (submitted)="onSubmit()">
+
+      <!-- Step 1 -->
+      <app-step label="Personal" [formGroup]="personalGroup">
+        <app-personal-step [formGroup]="personalGroup" />
+      </app-step>
+
+      <!-- Step 2 -->
+      <app-step label="Qualifications" [formGroup]="qualGroup" [optional]="true">
+        <app-qualifications-step [formGroup]="qualGroup" />
+      </app-step>
+
+      <!-- Step 3 -->
+      <app-step label="Schedule" [formGroup]="scheduleGroup" [optional]="true">
+        <app-schedule-step [formGroup]="scheduleGroup" />
+      </app-step>
+
+      <!-- Step 4 -->
+      <app-step label="Compensation" [formGroup]="compensationGroup">
+        <app-compensation-step [formGroup]="compensationGroup" />
+      </app-step>
+
+      <!-- Step 5 -->
+      <app-step label="Admin" [optional]="true">
+        <app-admin-step [formGroup]="adminGroup" [isSubmitting]="isSubmitting" />
+
+        <!-- Submit projected into stepper's action bar -->
+        <button stepperSubmit mat-flat-button [color]="'primary'" type="submit" [disabled]="isSubmitting">
+          @if (isSubmitting) {
+          <mat-spinner diameter="18" class="mr-2"></mat-spinner>
+          } @else {
+          <mat-icon svgIcon="check" class="icon-size-4"/>
+          }
+          {{ isSubmitting ? 'Saving...' : 'Add trainer' }}
+        </button>
+      </app-step>
+
+    </app-stepper>
+  </form>
+
+</div>

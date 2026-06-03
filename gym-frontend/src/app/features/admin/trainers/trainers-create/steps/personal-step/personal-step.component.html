@@ -1,0 +1,111 @@
+<div class="bg-gray-50 overflow-hidden" [formGroup]="formGroup">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="user"/>
+    <span class="text-lg font-semibold tracking-tight">Personal information</span>
+  </div>
+
+  <div class="p-6">
+
+    <!-- Photo upload -->
+    <div class="flex items-center gap-5 mb-8">
+      <div class="w-20 h-20 rounded-full overflow-hidden ring-2 ring-offset-2 ring-primary-300 flex-shrink-0">
+        @if (photoPreview) {
+          <img [src]="photoPreview" class="w-full h-full object-cover" alt="Trainer photo" />
+        } @else {
+          <div class="w-full h-full flex items-center justify-center bg-primary-100 text-primary-700 text-2xl font-semibold">
+            {{ getInitials() }}
+          </div>
+        }
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="photo-upload" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-secondary hover:bg-hover transition-colors">
+          <mat-icon class="icon-size-4" svgIcon="upload"/>
+          Upload photo
+        </label>
+        <input id="photo-upload" type="file" accept="image/*" (change)="onPhotoSelected($event)" class="hidden" />
+        <span class="text-xs text-hint">JPG or PNG, max 2 MB</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div>
+        <p class="mb-2 text-sm font-medium">First name <span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="first_name" placeholder="e.g. Ahmed" />
+          <mat-error *ngIf="formGroup.get('first_name')!.hasError('required')">First name is required</mat-error>
+          <mat-error *ngIf="formGroup.get('first_name')!.hasError('minlength')">At least 2 characters</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Last name <span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="last_name" placeholder="e.g. Al-Rashidi" />
+          <mat-error *ngIf="formGroup.get('last_name')!.hasError('required')">Last name is required</mat-error>
+          <mat-error *ngIf="formGroup.get('last_name')!.hasError('minlength')">At least 2 characters</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Date of birth</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="dobPicker" formControlName="date_of_birth" placeholder="DD/MM/YYYY" readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+          <mat-datepicker #dobPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Gender</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="gender" placeholder="Select">
+            <mat-option value="">Please select</mat-option>
+            <mat-option value="male">Male</mat-option>
+            <mat-option value="female">Female</mat-option>
+            <mat-option value="other">Prefer not to say</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Phone <span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <span matTextPrefix>+968&nbsp;</span>
+          <input matInput formControlName="phone" placeholder="9000 0000" />
+          <mat-error *ngIf="formGroup.get('phone')!.hasError('required')">Phone number is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Email</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="email" formControlName="email" placeholder="trainer@gym.com" />
+          <mat-error *ngIf="formGroup.get('email')!.hasError('email')">Enter a valid email address</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Nationality</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="nationality" placeholder="e.g. Omani" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">National ID / Iqama</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="national_id" placeholder="ID number" />
+        </mat-form-field>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="mb-2 text-sm font-medium">Bio / About</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <textarea matInput formControlName="bio" rows="3" placeholder="A short bio visible to members..."></textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </div>
+</div>

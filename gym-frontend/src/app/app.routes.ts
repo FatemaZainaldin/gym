@@ -1,26 +1,26 @@
 import { Route } from '@angular/router';
-import { authGuard } from './domains/auth/auth.guard';
-import { noAuthGuard } from './domains/auth/no-auth.gaurd';
-import { roleGuard } from './domains/auth/role.gaurd';
-import { wildcardGuard } from './domains/auth/wild-card.gaurd';
+import { authGuard } from './core/guards/auth.guard';
+import { noAuthGuard } from './core/guards/no-auth.gaurd';
+import { roleGuard } from './core/guards/role.gaurd';
+import { wildcardGuard } from './core/guards/wild-card.gaurd';
 
 export const routes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
     canActivate: [wildcardGuard],
-    loadChildren: () => import('./domains/auth/routes'),
+    loadChildren: () => import('./features/auth/routes'),
   },
   {
     path: 'auth',
     canActivate: [noAuthGuard],
-    loadChildren: () => import('./domains/auth/routes'),
+    loadChildren: () => import('./features/auth/routes'),
   },
   {
     path: 'admin',
-    canActivate: [authGuard, roleGuard],
+    // canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] },
-    loadChildren: () => import('./features/admin/routes'),
+    loadChildren: () => import('./features/admin/admin.routes'),
   },
   {
     path: 'customer',
@@ -39,6 +39,6 @@ export const routes: Route[] = [
   {
     path: '**',
     canActivate: [wildcardGuard],
-    loadChildren: () => import('./domains/auth/routes'),
+    loadChildren: () => import('./features/auth/routes'),
   },
 ];

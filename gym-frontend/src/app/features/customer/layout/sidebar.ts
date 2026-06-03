@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Navigation } from '@/app/features/admin/layout/ui/navigation';
-import { User } from '@/app/features/admin/layout/ui/user';
+import { Navigation } from '@/app/core/navigation/navigation.component';
+import { User } from '@/app/features/admin/layout/user';
 
 @Component({
   selector: 'customer-sidebar',

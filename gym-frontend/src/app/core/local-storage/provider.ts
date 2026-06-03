@@ -4,7 +4,7 @@ import {
   makeEnvironmentProviders,
   provideAppInitializer,
 } from '@angular/core';
-import { StorageService } from '@/app/domains/services/storage.service';
+import { StorageService } from '@/app/core/services/storage.service';
 import { LocalStorage } from './local-storage';
 
 export const provideLocalStorage = (): EnvironmentProviders =>

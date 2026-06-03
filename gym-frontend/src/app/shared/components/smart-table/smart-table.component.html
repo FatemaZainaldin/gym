@@ -1,0 +1,202 @@
+<div class="m-4 flex flex-col border border-gray-200 rounded-md overflow-hidden bg-white text-md">
+
+  <!-- Toolbar -->
+  <div class="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-gray-200">
+
+    @if (showGlobalSearch) {
+    <div class="relative flex-1 max-w-xs">
+      <mat-icon svgIcon="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 !text-base" />
+      <input type="text" [placeholder]="globalSearchPlaceholder" [value]="globalSearch()"
+        (input)="onGlobalSearch($any($event.target).value)" class="w-full pl-8 pr-3 py-1.5 text-md border border-gray-300 rounded-md bg-white
+                 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" />
+    </div>
+    }
+
+    <div class="flex items-center gap-2 ml-auto">
+
+      @if (columns.some(c => c.filterable)) {
+
+      <button type="button" (click)="toggleColumnFilters()" class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 text-md font-medium rounded-md border
+                 transition-colors duration-150" [class]="showColumnFilters()
+            ? 'bg-gray-100 border-gray-300 text-gray-600 '
+            : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'">
+        <mat-icon [svgIcon]="showColumnFilters() ? 'funnel-x':'funnel-plus'" class="!text-base !w-4 !h-4" />
+        Filters
+        @if (hasActiveFilters) {
+        <span class="ml-0.5 w-2 h-2 rounded-full bg-primary"></span>
+        }
+      </button>
+      }
+
+
+      @if (hasActiveFilters) {
+      <button type="button" (click)="clearAllFilters()" class="inline-flex items-center gap-1 px-3 py-1.5 text-md font-medium rounded-md border
+                 border-red-300 text-red-500 bg-white transition-colors duration-150 ">
+        <mat-icon svgIcon="x" class="!text-base !w-4 !h-4 mb-0.5" />
+        Clear
+      </button>
+      }
+
+    </div>
+  </div>
+
+  <!-- Scrollable table -->
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse" [class.opacity-60]="loading" [class.pointer-events-none]="loading">
+
+      <thead class="bg-gray-50 border-b-2 border-gray-200">
+
+        <!-- Column headers -->
+        <tr>
+          @for (col of columns; track col.key) {
+          <th [style.width]="col.width" (click)="onSort(col)"
+            class="px-4 py-3 text-xs font-normal uppercase tracking-wide text-gray-500 whitespace-nowrap select-none"
+            [class.cursor-pointer]="col.sortable" [class.hover:bg-gray-100]="col.sortable"
+            [class.text-left]="!col.align || col.align === 'left'" [class.text-center]="col.align === 'center'"
+            [class.text-right]="col.align === 'right'" [class.text-primary]="sortColumn() === col.key">
+            <span class="inline-flex items-center gap-1">
+              {{ col.label }}
+              @if (col.sortable) {
+              <span class="text-xs" [class.text-primary]="sortColumn() === col.key"
+                [class.text-gray-400]="sortColumn() !== col.key">
+                {{ sortIcon(col.key) }}
+              </span>
+              }
+            </span>
+          </th>
+          }
+        </tr>
+
+        <!-- Column filter row -->
+        @if (showColumnFilters()) {
+        <tr class="bg-gray-50 border-b border-gray-200">
+          @for (col of columns; track col.key) {
+          <th class="px-2 py-2">
+            @if (col.filterable) {
+            @if (!col.filterType || col.filterType === 'text') {
+            <input type="text" [placeholder]="col.label" [value]="getColumnFilter(col.key)"
+              (input)="onColumnFilter(col.key, $any($event.target).value)" class="w-full px-2 py-1 text-md border border-gray-300 rounded
+                             focus:outline-none focus:ring-1 focus:ring-primary bg-white" />
+            } @else if (col.filterType === 'select') {
+            <select [value]="getColumnFilter(col.key)" (change)="onColumnFilter(col.key, $any($event.target).value)"
+              class="w-full px-2 py-1.5 text-md border border-gray-300 rounded
+                             focus:outline-none focus:ring-1 focus:ring-primary bg-white">
+              <option value="">All</option>
+              @for (opt of col.filterOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+            }
+            }
+          </th>
+          }
+        </tr>
+        }
+
+      </thead>
+
+      <tbody class="divide-y divide-gray-100">
+
+        <!-- Skeleton rows while loading -->
+        @if (loading) {
+        @for (i of [1,2,3,4,5]; track i) {
+        <tr>
+          @for (col of columns; track col.key) {
+          <td class="px-4 py-3">
+            <div class="h-3.5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+          </td>
+          }
+        </tr>
+        }
+
+        <!-- Empty state -->
+        } @else if (paginatedRows().length === 0) {
+        <tr>
+          <td [colSpan]="columns.length" class="px-4 py-12 text-center text-gray-400">
+            <div class="flex flex-col items-center gap-2">
+              <mat-icon svgIcon="inbox" class="!text-4xl text-gray-300" />
+              <span>{{ emptyMessage }}</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Data rows -->
+        } @else {
+        @for (row of paginatedRows(); track $index) {
+        <tr class="hover:bg-gray-50 transition-colors duration-100">
+          @for (col of columns; track col.key) {
+          <td class="px-4 py-3 text-gray-700" [class.text-left]="!col.align || col.align === 'left'"
+            [class.text-center]="col.align === 'center'" [class.text-right]="col.align === 'right'">
+            @if (col.cellTemplate) {
+            <ng-container [ngTemplateOutlet]="col.cellTemplate"
+              [ngTemplateOutletContext]="{ $implicit: row, value: row[col.key] }" />
+            } @else {
+            {{ getCellValue(row, col) }}
+            }
+          </td>
+          }
+        </tr>
+        }
+        }
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-gray-50 border-t border-gray-200">
+
+    <!-- Item count -->
+    <span class="text-md text-gray-500">
+      @if (!loading && total() > 0) {
+      Showing
+      <span class="font-medium text-gray-700">{{ (page() - 1) * pageSize() + 1 }}</span>
+      –
+      <span class="font-medium text-gray-700">{{ minOf(page() * pageSize(), total()) }}</span>
+      of
+      <span class="font-medium text-gray-700">{{ total() }}</span>
+      }
+    </span>
+
+    <!-- Page buttons -->
+    <div class="flex items-center gap-1">
+      <button type="button" [disabled]="page() === 1" (click)="goToPage(page() - 1)" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white
+               text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed
+               transition-colors duration-150">
+        <mat-icon svgIcon="arrow-left" class="!text-base" />
+      </button>
+
+      @for (p of pageNumbers(); track $index) {
+      @if (p === '...') {
+      <span class="w-8 h-8 flex items-center justify-center text-gray-400 text-md">…</span>
+      } @else {
+      <button type="button" (click)="goToPage(p)" class="w-8 h-8 flex items-center justify-center rounded border text-md font-medium
+                   transition-colors duration-150" [class]="p === page()
+              ? 'bg-primary border-primary text-gray-600'
+              : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'">
+        {{ p }}
+      </button>
+      }
+      }
+
+      <button type="button" [disabled]="page() === totalPages()" (click)="goToPage(page() + 1)" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 bg-white
+               text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed
+               transition-colors duration-150">
+        <mat-icon svgIcon="arrow-right" class="!text-base" />
+      </button>
+    </div>
+
+    <!-- Page size selector -->
+    <div class="flex items-center gap-2 text-md text-gray-500">
+      <span>Rows per page:</span>
+      <select [value]="pageSize()" (change)="onPageSizeChange(+$any($event.target).value)" class="px-2 py-1 border border-gray-300 rounded bg-white text-gray-700 text-md
+               focus:outline-none focus:ring-1 focus:ring-primary">
+        @for (s of pageSizeOptions; track s) {
+        <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </div>
+
+  </div>
+
+</div>

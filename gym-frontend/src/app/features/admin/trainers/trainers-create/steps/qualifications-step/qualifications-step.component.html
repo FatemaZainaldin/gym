@@ -1,0 +1,77 @@
+<div class="bg-gray-50 overflow-hidden" [formGroup]="formGroup">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="graduation-cap"></mat-icon>
+    <span class="text-lg font-semibold tracking-tight">Qualifications & specializations</span>
+  </div>
+
+  <div class="p-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Education level</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="education_level" placeholder="Select">
+            <mat-option value="">Please select</mat-option>
+            <mat-option *ngFor="let lvl of EDUCATION_LEVELS" [value]="lvl">{{ lvl }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Field of study</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="field_of_study" placeholder="e.g. Sports science" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Years of experience</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="number" formControlName="years_experience" placeholder="e.g. 5" min="0" />
+          <mat-error *ngIf="formGroup.get('years_experience')!.hasError('min')">Must be 0 or more</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Certifications</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="certifications" placeholder="e.g. ACE, NASM, ISSA" />
+          <mat-hint>Comma-separated</mat-hint>
+        </mat-form-field>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="mb-2 text-sm font-medium">Specializations</p>
+        <div class="flex flex-wrap gap-2 mt-1">
+          <button
+            *ngFor="let s of SPECIALIZATIONS"
+            type="button"
+            (click)="toggleSelection('specializations', s)"
+            class="px-3 py-1.5 rounded-full text-sm font-medium border transition-colors"
+            [ngClass]="isSelected('specializations', s)
+              ? 'bg-primary text-white border-primary'
+              : 'bg-transparent text-secondary border-gray-300 hover:bg-hover'">
+            {{ s }}
+          </button>
+        </div>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="mb-2 text-sm font-medium">Languages spoken</p>
+        <div class="flex flex-wrap gap-2 mt-1">
+          <button
+            *ngFor="let lang of LANGUAGES"
+            type="button"
+            (click)="toggleSelection('languages', lang)"
+            class="px-3 py-1.5 rounded-full text-sm font-medium border transition-colors"
+            [ngClass]="isSelected('languages', lang)
+              ? 'bg-primary text-white border-primary'
+              : 'bg-transparent text-secondary border-gray-300 hover:bg-hover'">
+            {{ lang }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
