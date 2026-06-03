@@ -1,0 +1,113 @@
+<div class="bg-gray-50 overflow-hidden" [formGroup]="formGroup">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="calendar-days"></mat-icon>
+    <span class="text-lg font-semibold tracking-tight">Schedule & availability</span>
+  </div>
+
+  <div class="p-6">
+
+    <!-- Days + shifts -->
+    <div formArrayName="availability" class="divide-y">
+      <div
+        *ngFor="let dayCtrl of availabilityArray.controls; let di = index"
+        [formGroupName]="di"
+        class="flex flex-wrap items-center gap-3 py-3">
+
+        <mat-slide-toggle
+          [checked]="getDayGroup(di).get('active')!.value"
+          (change)="toggleDay(di)"
+          color="primary">
+        </mat-slide-toggle>
+
+        <span class="w-10 text-sm font-semibold"
+          [class.text-secondary]="!getDayGroup(di).get('active')!.value">
+          {{ DAYS_OF_WEEK[di] }}
+        </span>
+
+        @if (!getDayGroup(di).get('active')!.value) {
+          <span class="text-sm text-hint italic">Day off</span>
+        }
+
+        @if (getDayGroup(di).get('active')!.value) {
+          <div formArrayName="shifts" class="flex flex-wrap items-center gap-2 flex-1">
+
+            <div
+              *ngFor="let shift of getShifts(di).controls; let si = index"
+              [formGroupName]="si"
+              class="flex items-center gap-1.5 bg-default rounded-lg px-3 py-1 border border-gray-200">
+
+              <mat-form-field appearance="outline" class="w-24" subscriptSizing="dynamic">
+                <input matInput type="time" formControlName="start_time" />
+              </mat-form-field>
+
+              <span class="text-secondary text-sm">–</span>
+
+              <mat-form-field appearance="outline" class="w-24" subscriptSizing="dynamic">
+                <input matInput type="time" formControlName="end_time" />
+              </mat-form-field>
+
+              @if (getShifts(di).length > 1) {
+                <button mat-icon-button type="button" class="w-7 h-7 min-h-0"
+                  (click)="removeShift(di, si)" matTooltip="Remove shift">
+                  <mat-icon class="icon-size-4 text-hint" svgIcon="x"></mat-icon>
+                </button>
+              }
+            </div>
+
+            @if (getShifts(di).length < 3) {
+              <button mat-stroked-button type="button" class="h-9" (click)="addShift(di)">
+                <mat-icon class="icon-size-4" svgIcon="plus"></mat-icon>
+                <span class="text-xs">Add shift</span>
+              </button>
+            }
+
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <mat-divider class="my-6"></mat-divider>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Session duration</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="session_duration_minutes">
+            <mat-option *ngFor="let d of SESSION_DURATIONS" [value]="d">{{ d }} min</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Max clients / day</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="number" formControlName="max_clients_per_day" placeholder="e.g. 8" min="1" />
+          <mat-error *ngIf="formGroup.get('max_clients_per_day')!.hasError('min')">Must be at least 1</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div></div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Contract start</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="startPicker" formControlName="contract_start" placeholder="DD/MM/YYYY" readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Contract end</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput [matDatepicker]="endPicker" formControlName="contract_end" placeholder="DD/MM/YYYY" readonly />
+          <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </div>
+</div>

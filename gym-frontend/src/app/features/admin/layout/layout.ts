@@ -6,12 +6,13 @@ import {
   MatSidenavContainer,
   MatSidenavContent,
 } from '@angular/material/sidenav';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Media } from '@/app/core/media';
-import { LanguageSwitcher } from '@/app/features/admin/layout/ui/language-switcher';
-import { Notifications } from '@/app/features/admin/layout/ui/notifications';
-import { SchemeSwitcher } from '@/app/features/admin/layout/ui/scheme-switcher';
-import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
+import { NavigationService } from '@/app/core/navigation/navigation.service';
+import { LanguageSwitcher } from './language-switcher';
+import { Notifications } from './notifications';
+import { SchemeSwitcher } from './scheme-switcher';
+import { AdminSidebar } from './sidebar';
 
 @Component({
   selector: 'admin-layout',
@@ -26,7 +27,7 @@ import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
     SchemeSwitcher,
     Notifications,
     LanguageSwitcher,
-    
+
   ],
   template: `
 
@@ -45,7 +46,7 @@ import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
       <mat-sidenav-content>
         <!-- Banner -->
         <div
-          class="relative w-full bg-emerald-600 px-6 py-4 font-medium text-white"
+          class="hidden relative w-full bg-emerald-600 px-6 py-4 font-medium text-white"
         >
           <a
             class="absolute inset-0 z-10"
@@ -82,7 +83,15 @@ import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
             <notifications />
           </div>
         </div>
-
+        @if(!isFormMode){
+        <div class=" flex items-center p-4 pb-0 text-4xl font-semibold justify-between" >
+          {{activeItem()?.label }}
+            <button  type="button"  matButton="filled" (click)="onAdd()" >
+              <mat-icon svgIcon="plus" class="mb-0.5" />
+          Add
+        </button>
+        </div>
+}
         <!-- Content -->
         <router-outlet />
       </mat-sidenav-content>
@@ -92,9 +101,22 @@ import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
 export class AdminLayout {
   // Dependencies
   private media = inject(Media);
+  private route = inject(Router);
+  private navigationService = inject(NavigationService);
 
   // State
   protected isMobile = computed(() =>
     this.media.match(`(max-width: 1023px)`)()
   );
+
+  readonly activeItem = this.navigationService.activeItem;
+
+  onAdd() {
+    this.route.navigateByUrl('/admin/trainers/new');
+  }
+
+  get isFormMode(): boolean {
+    const url = this.route.url;
+    return url.includes('/new') || url.includes('/edit');
+  }
 }

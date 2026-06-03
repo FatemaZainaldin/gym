@@ -2,15 +2,15 @@ import {  CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDate
 
 export abstract class BaseEntity {
 
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id: string;
     
-    @CreateDateColumn()
+    @CreateDateColumn({type:'timestamptz'})
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({type:'timestamptz'})
     updatedAt: Date;
 
-    @DeleteDateColumn()       // soft-delete — never hard delete in production
+    @DeleteDateColumn({type:'timestamptz'})       // soft-delete — never hard delete in production
     deletedAt?: Date;
 }

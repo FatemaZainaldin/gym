@@ -8,10 +8,10 @@ import {
 } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { Media } from '@/app/core/media';
-import { LanguageSwitcher } from '@/app/features/admin/layout/ui/language-switcher';
-import { Notifications } from '@/app/features/admin/layout/ui/notifications';
-import { SchemeSwitcher } from '@/app/features/admin/layout/ui/scheme-switcher';
-import { AdminSidebar } from '@/app/features/admin/layout/ui/sidebar';
+import { LanguageSwitcher } from '../../admin/layout/language-switcher';
+import { Notifications } from '../../admin/layout/notifications';
+import { SchemeSwitcher } from '../../admin/layout/scheme-switcher';
+import { AdminSidebar } from '../../admin/layout/sidebar';
 
 @Component({
   selector: 'customer-layout',

@@ -1,0 +1,97 @@
+<div class="flex flex-col gap-6" [formGroup]="formGroup">
+
+  <!-- Social -->
+  <div class="bg-gray-50  overflow-hidden">
+    <div class="flex items-center gap-3 px-6 py-4 border-b">
+      <mat-icon class="text-primary icon-size-5" svgIcon="share"></mat-icon>
+      <span class="text-lg font-semibold tracking-tight">Social & online presence</span>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <div>
+          <p class="mb-2 text-sm font-medium">Instagram</p>
+          <mat-form-field appearance="outline" class="w-full">
+            <span matTextPrefix>@</span>
+            <input matInput formControlName="instagram" placeholder="handle" />
+          </mat-form-field>
+        </div>
+
+        <div>
+          <p class="mb-2 text-sm font-medium">TikTok</p>
+          <mat-form-field appearance="outline" class="w-full">
+            <span matTextPrefix>@</span>
+            <input matInput formControlName="tiktok" placeholder="handle" />
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin settings -->
+  <div class="bg-card rounded-2xl shadow-sm overflow-hidden">
+    <div class="flex items-center gap-3 px-6 py-4 border-b">
+      <mat-icon class="text-primary icon-size-5" svgIcon="cog"/>
+      <span class="text-lg font-semibold tracking-tight">Admin settings</span>
+    </div>
+    <div class="p-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <div>
+          <p class="mb-2 text-sm font-medium">Initial rating</p>
+          <div class="flex items-center gap-1 mt-1">
+            <button
+              *ngFor="let star of [1,2,3,4,5]"
+              type="button"
+              (click)="setRating(star)"
+              class="p-0.5 rounded transition-transform hover:scale-110">
+              <mat-icon
+                class="icon-size-7"
+                [class.text-amber-400]="star <= getRating()"
+                [class.text-gray-300]="star > getRating()">
+                {{ star <= getRating() ? 'star' : 'star_border' }}
+              </mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p class="mb-2 text-sm font-medium">Target monthly sessions</p>
+          <mat-form-field appearance="outline" class="w-full">
+            <input matInput type="number" formControlName="target_monthly_sessions" placeholder="e.g. 60" min="0" />
+          </mat-form-field>
+        </div>
+
+        <div class="sm:col-span-2">
+          <p class="mb-3 text-sm font-medium">Status</p>
+          <div class="flex flex-wrap gap-3">
+            <button
+              *ngFor="let opt of STATUS_OPTIONS"
+              type="button"
+              (click)="setStatus(opt.value)"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors"
+              [ngClass]="{
+                'bg-green-50 border-green-400 text-green-700': formGroup.get('status')!.value === opt.value && opt.value === 'active',
+                'bg-amber-50 border-amber-400 text-amber-700': formGroup.get('status')!.value === opt.value && opt.value === 'on_leave',
+                'bg-red-50 border-red-400 text-red-700':       formGroup.get('status')!.value === opt.value && opt.value === 'inactive',
+                'bg-transparent border-gray-300 text-secondary hover:bg-hover': formGroup.get('status')!.value !== opt.value
+              }">
+              <mat-icon class="icon-size-4">{{ opt.icon }}</mat-icon>
+              {{ opt.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="sm:col-span-2">
+          <p class="mb-2 text-sm font-medium">Admin notes</p>
+          <mat-form-field appearance="outline" class="w-full">
+            <textarea matInput formControlName="admin_notes" rows="3" placeholder="Internal notes visible to managers only..."></textarea>
+          </mat-form-field>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

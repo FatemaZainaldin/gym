@@ -5,6 +5,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { TrainersModule } from './trainers/trainers.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -44,6 +45,8 @@ import configuration from './config/configuration';
     }),
 
     AuthModule,
+
+    TrainersModule,
   ],
   providers: [
     {

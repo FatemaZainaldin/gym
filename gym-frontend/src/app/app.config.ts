@@ -17,8 +17,8 @@ import { TranslocoHttpLoader } from '@/app/core/transloco/transloco-http-loader'
 import { routes } from './app.routes';
 import { loadingInterceptor } from './core/loader/loading.interceptor';
 import { provideLocalStorage } from './core/local-storage';
-import { AuthState } from './domains/auth/auth.state';
-import { jwtInterceptor } from './domains/auth/jwt.interceptor';
+import { AuthState } from './core/services/auth.state';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { errorInterceptor } from './core/toast/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
@@ -32,7 +32,7 @@ export const appConfig: ApplicationConfig = {
     // ── HTTP — must be first ──────────────────────────────────────────────
     provideHttpClient(
       withFetch(),
-      withInterceptors([jwtInterceptor, loadingInterceptor,errorInterceptor]),
+      withInterceptors([jwtInterceptor, loadingInterceptor, errorInterceptor]),
     ),
 
     // ── Router ───────────────────────────────────────────────────────────

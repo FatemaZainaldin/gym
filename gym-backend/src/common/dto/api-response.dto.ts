@@ -1,8 +1,12 @@
+import { Type } from "class-transformer";
+import { IsNumber, IsOptional, IsPositive, IsString, Min } from "class-validator";
+
 // src/common/dto/api-response.dto.ts
 export class ApiResponseDto<T = any> {
   success: boolean;
-  name:    string;     
+  name: string;
   message: { en: string; ar: string };
-  data?:   T;
-  meta?:   { page?: number; total?: number; limit?: number , pageSize:number};
+  data?: T;
+  meta?: { page?: number; total?: number; limit?: number};
 }
+
