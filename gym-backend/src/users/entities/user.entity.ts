@@ -2,9 +2,10 @@
 import { Entity, Column, Index, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
-import { BaseEntity } from '../../common/entities/base.entity';
+import { TenantBaseEntity } from '../../tenant/entities/tenant-base.entity';
 
 export enum UserRole {
+  SUPER_ADMIN  = 'super_admin',
   ADMIN = 'admin',
   TRAINER = 'trainer',
   CUSTOMER = 'customer',
@@ -18,7 +19,7 @@ export enum UserStatus {
 }
 
 @Entity('users')
-export class User extends BaseEntity {
+export class User extends TenantBaseEntity {
   @Column({ length: 100 })
   firstName: string;
 

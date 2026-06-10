@@ -15,6 +15,11 @@ export class TrainerFilterDto extends PaginationDto {
     @IsNotEmpty()
     firstName: string;
 
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    lastName:string;
+
 
     @IsArray()
     @IsOptional()

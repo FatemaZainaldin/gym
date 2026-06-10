@@ -1,4 +1,4 @@
-export type SortDirection = 'asc' | 'desc' | '';
+export type SortDirection = 'ASC' | 'DESC' | '';
 
 export interface ColumnDef<T = any> {
   key: string;              // maps to property in data
@@ -28,11 +28,11 @@ export interface PaginationMeta {
 }
 
 export interface TableState {
-  page: number;
+  currentPage: number;
   pageSize: number;
-  sortColumn: string;
-  sortDirection: SortDirection;
-  globalSearch: string;
+  sortBy?: string;
+  sortOrder?: SortDirection;
+  search?: string;
   columnFilters: Record<string, any>;
 }
 

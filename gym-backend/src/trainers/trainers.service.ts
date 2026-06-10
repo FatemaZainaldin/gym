@@ -23,10 +23,20 @@ export class TrainersService {
     }
 
     async findAllTrainers(filters: TrainerFilterDto) {
-        const { currentPage = 1, pageSize = 10, search, status, salaryType, nationality, specializations, firstName } = filters;
+        const {
+            currentPage = 1,
+            pageSize = 10,
+            search,
+            status,
+            salaryType,
+            nationality,
+            firstName,
+            lastName,
+            sortBy = 'createdAt',
+            sortOrder = 'DESC'
+        } = filters;
 
         const query = this.trainerRepository.createQueryBuilder('trainer');
-
 
         if (search) {
             query.andWhere(
@@ -36,13 +46,29 @@ export class TrainersService {
         }
 
         if (firstName) query.andWhere('trainer.firstName ILIKE :firstName', { firstName: `%${firstName}%` });
+        if (lastName) query.andWhere('trainer.lastName ILIKE :lastName', { lastName: `%${lastName}%` })
         if (status) query.andWhere('trainer.status = :status', { status });
         if (salaryType) query.andWhere('trainer.salaryType = :salaryType', { salaryType });
         if (nationality) query.andWhere('trainer.nationality ILIKE :nationality', { nationality: `%${nationality}%` });
 
+        // ← sorting
+        const allowedColumns = ['firstName', 'lastName', 'email', 'status', 'createdAt', 'salaryType'];
+        const safeSortBy = allowedColumns.includes(sortBy) ? sortBy : 'createdAt';
+        query.orderBy(`trainer.${safeSortBy}`, sortOrder as 'ASC' | 'DESC');
+
         query.skip((currentPage - 1) * pageSize).take(pageSize);
+
         const [data, total] = await query.getManyAndCount();
-        return { data, total, currentPage, pageSize, totalPages: Math.ceil(total / pageSize) }
+
+        return {
+            data,
+            meta: {
+                total,
+                currentPage,
+                pageSize,
+                totalPages: Math.ceil(total / pageSize)
+            }
+        };
     }
 
     async findTrainerById(id: string) {

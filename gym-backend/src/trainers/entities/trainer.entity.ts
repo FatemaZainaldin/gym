@@ -1,4 +1,4 @@
-import { BaseEntity } from "../../common/entities/base.entity";
+import { TenantBaseEntity } from "../../tenant/entities/tenant-base.entity";
 import { UserStatus } from "../../users/entities/user.entity";
 import { Column, Entity, Index } from "typeorm";
 
@@ -17,14 +17,13 @@ export interface TrainerAvailability {
 }
 
 @Entity('trainers')
-export class Trainer extends BaseEntity {
+export class Trainer extends TenantBaseEntity {
     @Column({ length: 100 })
     firstName: string;
 
     @Column({ length: 100 })
     lastName: string;
 
-    @Index({ unique: true })
     @Column({ length: 255 })
     email: string;
 

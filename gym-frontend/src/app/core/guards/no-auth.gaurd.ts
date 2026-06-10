@@ -1,20 +1,26 @@
 // src/app/core/auth/no-auth.guard.ts
 // Redirects logged-in users away from /login
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthState } from '../services/auth.state';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
+import { AuthState } from '../../core/services/auth.state';
 
-export const noAuthGuard: CanActivateFn = () => {
-  const state = inject(AuthState);
-  const router = inject(Router)
+export const noAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+  const authState = inject(AuthState);
+  const router = inject(Router);
 
-  if (state.isLoggedIn()) {
-    const module = state?.user()?.modules?.find(module => module.isDefault);
-    if (module?.link) {
-      router.navigateByUrl(module.link)
+  if (authState.isLoggedIn()) {
+    const returnUrl = route.queryParams['returnUrl'];
+
+    if (returnUrl) {
+      router.navigateByUrl(returnUrl);
+    } else {
+      const module = authState?.user()?.modules?.find(m => m.isDefault);
+      if (module?.link) {
+        router.navigateByUrl(module.link);
+      }
     }
     return false;
-
   }
+
   return true;
 };

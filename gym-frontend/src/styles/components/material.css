@@ -833,11 +833,11 @@
     --form-field-subscript-letter-spacing: var(--tracking-normal);
 
     /* Size */
-    --form-field-border-radius: 0.5rem; /* 8px */
+    --form-field-border-radius: 0.4rem; /* 8px */
     --form-field-margin-top: 1.5rem; /* 24px */
-    --form-field-padding-y: 0.5rem; /* 8px */
+    --form-field-padding-y: 0.8rem; /* 8px */
     --form-field-padding-x: 0.75rem; /* 12px */
-    --form-field-gap-y: 0.5rem; /* 8px */
+    --form-field-gap-y: 0.8rem; /* 8px */
     --form-field-gap-x: 0.5rem; /* 8px */
     --form-field-icon-size: 1rem; /* 16px */
     --form-field-icon-margin-x: -0.125rem; /* -2px */

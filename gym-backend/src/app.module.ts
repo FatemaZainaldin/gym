@@ -3,10 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RedisModule } from '@nestjs-modules/ioredis';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { TrainersModule } from './trainers/trainers.module';
 import configuration from './config/configuration';
+import { TenantsModule } from './tenant/tenant.module';
+import { TenantInterceptor } from './tenant/tenant.interceptor';
 
 @Module({
   imports: [
@@ -45,10 +47,15 @@ import configuration from './config/configuration';
     }),
 
     AuthModule,
-
     TrainersModule,
+    TenantsModule
   ],
+
   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TenantInterceptor,
+    },
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

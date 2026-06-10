@@ -70,10 +70,11 @@ export class AuthState {
 
   // ── Constructor — restore from sessionStorage ────────────────────────────
   constructor(private storage: StorageService) {
+    this.restore();
+
   }
 
   async init(): Promise<void> {
-    this.restore();
   }
 
   // ── Setters ──────────────────────────────────────────────────────────────
@@ -95,9 +96,7 @@ export class AuthState {
     this._user.set(null);
     this._token.set(null);
     this._expires.set(null);
-    this.storage.removeItem(KEYS.USER);
-    this.storage.removeItem(KEYS.TOKEN);
-    this.storage.removeItem(KEYS.EXPIRES);
+    this.storage.clear();
   }
 
   // ── Private ──────────────────────────────────────────────────────────────

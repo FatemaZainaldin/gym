@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
-  Component, Input, Output, EventEmitter,
-  OnChanges, SimpleChanges, computed, signal,
-  ChangeDetectionStrategy
+  Component, computed, input, output, signal,
+  ChangeDetectionStrategy, OnChanges, SimpleChanges
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,34 +11,29 @@ import {
 
 @Component({
   selector: 'app-smart-table',
-  standalone: true,
   imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './smart-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SmartTableComponent<T extends Record<string, any>> implements OnChanges {
 
-  // --- Inputs ---
-  @Input() columns: ColumnDef<T>[] = [];
-  @Input() data: T[] = [];
-
-  /** Pass this when server controls pagination. Omit for client-side. */
-  @Input() paginationMeta?: PaginationMeta;
-
-  @Input() pageSizeOptions: number[] = [10, 25, 50, 100];
-  @Input() defaultPageSize = 10;
-  @Input() loading = false;
-  @Input() emptyMessage = 'No records found.';
-  @Input() showGlobalSearch = true;
-  @Input() globalSearchPlaceholder = 'Search…';
+  // --- Signal Inputs ---
+  columns = input<ColumnDef<T>[]>([]);
+  data = input<T[]>([]);
+  paginationMeta = input<PaginationMeta | undefined>(undefined);
+  pageSizeOptions = input<number[]>([10, 25, 50, 100]);
+  defaultPageSize = input(10);
+  loading = input(false);
+  emptyMessage = input('No records found.');
+  showGlobalSearch = input(true);
+  globalSearchPlaceholder = input('Search…');
 
   // --- Outputs ---
-  /** Emitted on every state change when server-side mode is active */
-  @Output() stateChange = new EventEmitter<TableRequestEvent>();
+  stateChange = output<TableRequestEvent>();
 
   // --- Internal reactive state ---
   protected page = signal(1);
-  protected pageSize = signal(this.defaultPageSize);
+  protected pageSize = signal(10);
   protected sortColumn = signal('');
   protected sortDirection = signal<SortDirection>('');
   protected globalSearch = signal('');
@@ -47,21 +41,19 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   protected showColumnFilters = signal(false);
 
   // True when consumer provided paginationMeta (server-side)
-  protected get isServerSide(): boolean {
-    return !!this.paginationMeta;
-  }
+  protected isServerSide = computed(() => !!this.paginationMeta());
 
   // --- Derived: processed rows (client-side only) ---
   protected processedRows = computed(() => {
-    if (this.isServerSide) return this.data; // server already filtered/sorted
+    if (this.isServerSide()) return this.data();
 
-    let rows = [...this.data];
+    let rows = [...this.data()];
 
     // Global search
     const q = this.globalSearch().toLowerCase().trim();
     if (q) {
       rows = rows.filter(row =>
-        this.columns.some(col => {
+        this.columns().some(col => {
           const v = row[col.key];
           return v != null && String(v).toLowerCase().includes(q);
         })
@@ -87,7 +79,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
         if (av == null) return 1;
         if (bv == null) return -1;
         const cmp = av < bv ? -1 : av > bv ? 1 : 0;
-        return dir === 'asc' ? cmp : -cmp;
+        return dir === 'ASC' ? cmp : -cmp;
       });
     }
 
@@ -95,15 +87,15 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   });
 
   protected paginatedRows = computed(() => {
-    if (this.isServerSide) return this.data;
+    if (this.isServerSide()) return this.data();
     const all = this.processedRows();
     const start = (this.page() - 1) * this.pageSize();
     return all.slice(start, start + this.pageSize());
   });
 
   protected total = computed(() =>
-    this.isServerSide
-      ? (this.paginationMeta?.total ?? 0)
+    this.isServerSide()
+      ? (this.paginationMeta()?.total ?? 0)
       : this.processedRows().length
   );
 
@@ -129,10 +121,9 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
 
   // --- Lifecycle ---
   ngOnChanges(changes: SimpleChanges) {
-    // When server data arrives, keep page as-is
-    if (changes['paginationMeta'] && this.paginationMeta) {
-      this.page.set(this.paginationMeta.currentPage);
-      this.pageSize.set(this.paginationMeta.pageSize);
+    if (changes['paginationMeta'] && this.paginationMeta()) {
+      this.page.set(this.paginationMeta()!.currentPage);
+      this.pageSize.set(this.paginationMeta()!.pageSize);
     }
   }
 
@@ -143,9 +134,9 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     const dir = this.sortDirection();
     if (current !== col.key) {
       this.sortColumn.set(col.key);
-      this.sortDirection.set('asc');
+      this.sortDirection.set('ASC');
     } else {
-      this.sortDirection.set(dir === 'asc' ? 'desc' : dir === 'desc' ? '' : 'asc');
+      this.sortDirection.set(dir === 'ASC' ? 'DESC' : dir === 'DESC' ? '' : 'ASC');
       if (this.sortDirection() === '') this.sortColumn.set('');
     }
     this.page.set(1);
@@ -154,7 +145,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
 
   sortIcon(colKey: string): string {
     if (this.sortColumn() !== colKey) return '↕';
-    return this.sortDirection() === 'asc' ? '↑' : '↓';
+    return this.sortDirection() === 'ASC' ? '↑' : '↓';
   }
 
   // --- Search & Filters ---
@@ -171,7 +162,11 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   }
 
   clearColumnFilter(colKey: string) {
-    this.columnFilters.update(f => { const c = { ...f }; delete c[colKey]; return c; });
+    this.columnFilters.update(f => {
+      const c = { ...f };
+      delete c[colKey];
+      return c;
+    });
     this.page.set(1);
     this.emitState();
   }
@@ -217,13 +212,13 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
 
   // --- Emit state for server-side ---
   private emitState() {
-    if (!this.isServerSide) return;
+    if (!this.isServerSide()) return;
     const state: TableState = {
-      page: this.page(),
+      currentPage: this.page(),
       pageSize: this.pageSize(),
-      sortColumn: this.sortColumn(),
-      sortDirection: this.sortDirection(),
-      globalSearch: this.globalSearch(),
+      ...(this.sortColumn() && { sortBy: this.sortColumn() }),
+      ...(this.sortDirection() && { sortOrder: this.sortDirection() }),
+      search: this.globalSearch(),
       columnFilters: this.columnFilters(),
     };
     this.stateChange.emit({ state });

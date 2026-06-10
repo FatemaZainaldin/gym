@@ -33,6 +33,8 @@ export interface JwtPayload {
   role: any;
   iat?: number;
   exp?: number;
+  tenantId: string | null;
+  isSuperAdmin: boolean;
 }
 
 // What we return to the client on login / refresh
@@ -258,6 +260,9 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role,
+      tenantId: user.tenantId,
+      isSuperAdmin: user.role === UserRole.SUPER_ADMIN,
+
     };
 
     // Sign access token (short-lived — 15 min)

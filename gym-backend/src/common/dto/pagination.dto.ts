@@ -1,6 +1,10 @@
 import { Type } from "class-transformer";
-import { IsNumber, IsOptional, IsPositive, Min, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsPositive, Min, IsString, IsEnum } from "class-validator";
 
+export enum SortOrder {
+ASC = 'ASC',
+DESC = 'DESC' 
+} 
 export class PaginationDto {
 
   @IsNumber()
@@ -17,9 +21,15 @@ export class PaginationDto {
   pageSize?: number = 10;
 
 
-
-
   @IsOptional()
   @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsString()
+  sortBy?: string;
+
+  @IsOptional()
+  @IsEnum(SortOrder)
+  sortOrder? : SortOrder = SortOrder.ASC;
 }

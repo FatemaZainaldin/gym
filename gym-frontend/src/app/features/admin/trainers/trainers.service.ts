@@ -19,7 +19,7 @@ export class TrainersService {
   }
 
   getAllTrainers(params?: any): Observable<any> {
-    return this.http.get(`${this.API}`,{ withCredentials: true} );
+    return this.http.get(`${this.API}`, { params });
   }
 
   getTrainerById(id: string): Observable<any> {

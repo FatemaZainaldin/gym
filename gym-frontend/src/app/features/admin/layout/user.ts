@@ -6,6 +6,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { Router } from '@angular/router';
 import { Scheme, Theming } from '@/app/core/theming';
 import { AuthService } from '@/app/features/auth/auth.service';
+import { AuthState } from '@/app/core/services/auth.state';
 
 @Component({
   selector: 'user',
@@ -28,9 +29,9 @@ import { AuthService } from '@/app/features/auth/auth.service';
         alt="User avatar"
       />
       <div class="flex min-w-0 flex-auto flex-col select-none">
-        <div class="truncate font-medium">Brian Hughes</div>
+        <div class="truncate font-medium">{{name}}</div>
         <div class="text-on-surface-variant truncate text-sm">
-            brian&#64;example.com
+             {{email}}
         </div>
       </div>
       <mat-icon
@@ -55,9 +56,9 @@ import { AuthService } from '@/app/features/auth/auth.service';
           alt="User avatar"
         />
         <div class="ml-3 flex min-w-0 flex-auto flex-col select-none">
-          <div class="truncate font-medium">Brian Hughes</div>
+          <div class="truncate font-medium">{{name}}</div>
           <div class="text-on-surface-variant truncate text-xs">
-            brian&#64;example.com
+           {{email}}
           </div>
         </div>
       </button>
@@ -118,7 +119,11 @@ export class User {
   // Dependencies
   private theming = inject(Theming);
   private authService = inject(AuthService);
+  private state = inject(AuthState);
   private router = inject(Router);
+
+  name = this.state.fullName();
+  email = this.state.user()?.email;
 
   // State
   protected scheme = computed(() => this.theming.scheme());
@@ -131,6 +136,8 @@ export class User {
   updateScheme(scheme: Scheme) {
     this.theming.scheme.set(scheme);
   }
+
+
 
   signOut() {
     this.authService.logout();

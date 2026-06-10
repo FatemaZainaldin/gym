@@ -61,8 +61,8 @@ export class TrainersController {
     @Get('')
     @HttpCode(HttpStatus.OK)
     async findAll(@Query() trainerFilterDto : TrainerFilterDto) {
-        const {data, total, currentPage, pageSize, totalPages } = await this.trainersService.findAllTrainers(trainerFilterDto);
-        return success('ALL_TRAINERS_FETCHED', { en: 'All trainers fetched.', ar: 'تم جلب المدربين.' },data, { total, currentPage, pageSize, totalPages });
+        const {data, meta } = await this.trainersService.findAllTrainers(trainerFilterDto);
+        return success('ALL_TRAINERS_FETCHED', { en: 'All trainers fetched.', ar: 'تم جلب المدربين.' },data, meta);
     }
 
 }
