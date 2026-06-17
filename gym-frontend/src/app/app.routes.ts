@@ -9,36 +9,42 @@ export const routes: Route[] = [
     path: '',
     pathMatch: 'full',
     canActivate: [wildcardGuard],
-    loadChildren: () => import('./features/auth/routes'),
+    loadChildren: () => import('./projects/shared/auth/routes'),
   },
   {
     path: 'auth',
     canActivate: [noAuthGuard],
-    loadChildren: () => import('./features/auth/routes'),
+    loadChildren: () => import('./projects/shared/auth/routes'),
+  },
+  {
+    path: 'superadmin',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['super_admin'] },
+    loadChildren: () => import('./projects/admin/admin.routes'),
   },
   {
     path: 'admin',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['admin'] },
-    loadChildren: () => import('./features/admin/admin.routes'),
+    loadChildren: () => import('./projects/admin/admin.routes'),
   },
   {
     path: 'customer',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['customer'] },
-    loadChildren: () => import('./features/customer/routes'),
+    loadChildren: () => import('./projects/customer/routes'),
   },
 
   {
     path: 'trainer',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['trainer'] },
-    loadChildren: () => import('./features/customer/routes'),
+    loadChildren: () => import('./projects/customer/routes'),
   },
 
   {
     path: '**',
     canActivate: [wildcardGuard],
-    loadChildren: () => import('./features/auth/routes'),
+    loadChildren: () => import('./projects/shared/auth/routes'),
   },
 ];

@@ -9,12 +9,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost) {
-    const ctx  = host.switchToHttp();
-    const res  = ctx.getResponse<Response>();
-    const req  = ctx.getRequest<Request>();
+    const ctx = host.switchToHttp();
+    const res = ctx.getResponse<Response>();
+    const req = ctx.getRequest<Request>();
 
-    let status  = HttpStatus.INTERNAL_SERVER_ERROR;
-    let name    = 'INTERNAL_ERROR';
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let name = 'INTERNAL_ERROR';
     let message = {
       en: 'Something went wrong. Please try again.',
       ar: 'حدث خطأ ما. يرجى المحاولة مجدداً.',
@@ -26,21 +26,22 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
       // If message already has our shape — use it directly
       if (body?.message?.en) {
-        name    = body.name    ?? this.statusToName(status);
+        name = body.name ?? this.statusToName(status);
         message = body.message;
       } else {
-        name    = this.statusToName(status);
+        name = this.statusToName(status);
         message = this.statusToMessage(status, body?.message);
       }
     }
 
     this.logger.error(`${req.method} ${req.url} → ${status} ${name}`);
+    this.logger.error(exception instanceof Error ? exception.stack : exception);
 
     res.status(status).json({
-      success:   false,
+      success: false,
       name,
       message,
-      path:      req.url,
+      path: req.url,
       timestamp: new Date().toISOString(),
     });
   }
@@ -61,14 +62,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
   private statusToMessage(status: number, detail?: string): { en: string; ar: string } {
     const map: Record<number, { en: string; ar: string }> = {
-      400: { en: detail ?? 'Invalid request data.',          ar: 'بيانات الطلب غير صحيحة.' },
-      401: { en: 'Invalid credentials.',                     ar: 'بيانات الدخول غير صحيحة.' },
-      403: { en: 'You do not have permission.',              ar: 'ليس لديك صلاحية للوصول.' },
-      404: { en: 'The requested resource was not found.',    ar: 'العنصر المطلوب غير موجود.' },
-      409: { en: detail ?? 'This record already exists.',   ar: 'هذا السجل موجود مسبقاً.' },
-      422: { en: 'Validation failed.',                       ar: 'فشل التحقق من البيانات.' },
-      429: { en: 'Too many requests. Please slow down.',     ar: 'طلبات كثيرة جداً. يرجى الانتظار.' },
-      500: { en: 'Something went wrong. Please try again.',  ar: 'حدث خطأ ما. يرجى المحاولة مجدداً.' },
+      400: { en: detail ?? 'Invalid request data.', ar: 'بيانات الطلب غير صحيحة.' },
+      401: { en: 'Invalid credentials.', ar: 'بيانات الدخول غير صحيحة.' },
+      403: { en: 'You do not have permission.', ar: 'ليس لديك صلاحية للوصول.' },
+      404: { en: 'The requested resource was not found.', ar: 'العنصر المطلوب غير موجود.' },
+      409: { en: detail ?? 'This record already exists.', ar: 'هذا السجل موجود مسبقاً.' },
+      422: { en: 'Validation failed.', ar: 'فشل التحقق من البيانات.' },
+      429: { en: 'Too many requests. Please slow down.', ar: 'طلبات كثيرة جداً. يرجى الانتظار.' },
+      500: { en: 'Something went wrong. Please try again.', ar: 'حدث خطأ ما. يرجى المحاولة مجدداً.' },
     };
     return map[status] ?? { en: 'An error occurred.', ar: 'حدث خطأ.' };
   }

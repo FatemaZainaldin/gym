@@ -1,7 +1,7 @@
 // src/modules/navigation/entities/nav-item.entity.ts
 import { Entity, Column, Tree, TreeChildren, TreeParent } from 'typeorm';
-import { UserRole } from '../../users/entities/user.entity';
 import { BaseEntity } from '../../common/entities/base.entity';
+import { Role } from 'src/users/enums/role.enum';
 
 
 @Entity('nav_items')
@@ -35,7 +35,7 @@ export class NavItem extends BaseEntity {
 
   // Which roles can see this item
   @Column({ type: 'simple-array' })
-  roles: UserRole[];
+  roles: Role[];
 
   // Optional badge (e.g. unread count)
   @Column({ nullable: true, length: 100 })

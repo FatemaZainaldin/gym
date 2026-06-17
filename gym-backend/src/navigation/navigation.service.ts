@@ -4,8 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
-import { UserRole } from '../users/entities/user.entity';
 import { NavItem } from './entities/navItem.entity';
+import { Role } from 'src/users/enums/role.enum';
 
 @Injectable()
 export class NavigationService {
@@ -14,7 +14,7 @@ export class NavigationService {
     @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  async getForRole(role: UserRole): Promise<NavItem[]> {
+  async getForRole(role: Role): Promise<NavItem[]> {
     const cacheKey = `nav:${role}`;
 
     // Check cache first
@@ -35,12 +35,12 @@ export class NavigationService {
     return filtered;
   }
 
-  async bustCache(role?: UserRole): Promise<void> {
+  async bustCache(role?: Role): Promise<void> {
     if (role) {
       await this.redis.del(`nav:${role}`);
     } else {
       // Bust all role caches
-      for (const r of Object.values(UserRole)) {
+      for (const r of Object.values(Role)) {
         await this.redis.del(`nav:${r}`);
       }
     }

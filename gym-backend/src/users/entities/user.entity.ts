@@ -3,13 +3,7 @@ import { Entity, Column, Index, BeforeInsert, BeforeUpdate } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { TenantBaseEntity } from '../../tenant/entities/tenant-base.entity';
-
-export enum UserRole {
-  SUPER_ADMIN  = 'super_admin',
-  ADMIN = 'admin',
-  TRAINER = 'trainer',
-  CUSTOMER = 'customer',
-}
+import { Role } from '../enums/role.enum';
 
 export enum UserStatus {
  ACTIVE = 'active',
@@ -26,7 +20,6 @@ export class User extends TenantBaseEntity {
   @Column({ length: 100 })
   lastName: string;
 
-  @Index({ unique: true })
   @Column({ length: 255 })
   email: string;
 
@@ -34,8 +27,8 @@ export class User extends TenantBaseEntity {
   @Exclude()            // never serialised to JSON response
   password: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
-  role: UserRole;
+  @Column({ type: 'enum', enum: Role, default: Role.MEMBER })
+  role: Role;
 
 
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE })

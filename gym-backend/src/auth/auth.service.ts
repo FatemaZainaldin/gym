@@ -11,17 +11,18 @@ import { InjectRedis } from '@nestjs-modules/ioredis';
 import Redis from 'ioredis';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { User, UserRole, UserStatus } from '../users/entities/user.entity';
+import { User, UserStatus } from '../users/entities/user.entity';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { NavItem } from 'src/navigation/entities/navItem.entity';
+import { Role } from 'src/users/enums/role.enum';
 
 export class LoginResponse {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  role: UserRole;
+  role: Role;
   phone?: string;
   avatar?: string;
   modules: NavItem[];
@@ -261,7 +262,7 @@ export class AuthService {
       email: user.email,
       role: user.role,
       tenantId: user.tenantId,
-      isSuperAdmin: user.role === UserRole.SUPER_ADMIN,
+      isSuperAdmin: user.role === Role.SUPER_ADMIN,
 
     };
 

@@ -45,10 +45,10 @@ import { TenantInterceptor } from './tenant/tenant.interceptor';
         keyPrefix: 'gym:', // Move keyPrefix outside config
       }),
     }),
-
+    TenantsModule,
     AuthModule,
     TrainersModule,
-    TenantsModule
+
   ],
 
   providers: [

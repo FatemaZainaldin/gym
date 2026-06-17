@@ -19,7 +19,7 @@ export default () => ({
     jwt: {
         accessSecret: process.env.JWT_ACCESS_SECRET ?? 'access_secret_CHANGE_ME',
         refreshSecret: process.env.JWT_REFRESH_SECRET ?? 'refresh_secret_CHANGE_ME',
-        accessExpiresIn: process.env.JWT_ACCESS_EXPIRES ?? '15m',
+        accessExpiresIn: process.env.JWT_ACCESS_EXPIRES ?? '24h',
         refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES ?? '7d',
     },
     bcrypt: {

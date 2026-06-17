@@ -9,7 +9,7 @@ import {
     Matches,
     isString,
 } from 'class-validator';
-import { UserRole } from 'src/users/entities/user.entity';
+import { Role } from 'src/users/enums/role.enum';
 
 export class RegisterDto {
     @IsString()
@@ -45,5 +45,5 @@ export class RegisterDto {
     avatar?: string;
 
     @IsString()
-    role: UserRole;
+    role: Role;
 }
