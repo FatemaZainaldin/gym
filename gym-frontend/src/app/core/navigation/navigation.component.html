@@ -3,7 +3,7 @@
   <div class="flex flex-col px-4">
     <!-- Section title -->
     <div class="px-2.5 py-1.5 text-md font-normal text-neutral-500  " [ngClass]="{'font-semibold text-primary-500': isRouteActive(section), 
-      'uppercase text-sm text-primary-600 font-semibold ' :section.children ,
+      'uppercase text-sm text-gray-100  ' :section.children ,
        'text-neutral-700 cursor-pointer': !section.children}" (click)="onSectionClick(section)">
       {{ section.label }}
 

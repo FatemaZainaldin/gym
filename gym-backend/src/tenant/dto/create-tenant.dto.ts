@@ -21,7 +21,7 @@ export class CreateTenantDTO {
 
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     logoUrl?: string;
 
 
@@ -47,10 +47,6 @@ export class CreateTenantDTO {
     @IsOptional()
     trialEndsAt?: Date;                   // null = not on trial
 
-
-    @IsDateString()
-    @IsNotEmpty()
-    suspendedAt?: Date;
 
     @IsString()
     @IsOptional()

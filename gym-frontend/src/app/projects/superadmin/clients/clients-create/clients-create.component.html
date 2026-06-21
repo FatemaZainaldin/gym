@@ -16,7 +16,7 @@
 
   <!-- STEPPER -->
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-    <app-stepper (submitted)="onSubmit()" >
+    <app-stepper (submitted)="onSubmit()">
 
       <!-- Step 1 -->
       <app-step label="Details" [formGroup]="detailsGroup">
@@ -25,12 +25,15 @@
 
 
       <!-- Step 3 -->
-      <app-step label="Subscription" [optional]="true">
+      <app-step label="Subscription" [formGroup]="subscriptionGroup">
+        <app-subscription-step [formGroup]="subscriptionGroup"></app-subscription-step>
       </app-step>
 
       <!-- Step 4 -->
       <app-step label="Confirm">
-        <button stepperSubmit mat-flat-button [color]="'primary'" type="submit" [disabled]="form.invalid">
+        <app-confirm-step [formGroup]="form" [isSubmitting]="isSubmitting"></app-confirm-step>
+        <button stepperSubmit mat-flat-button class="inline-flex" [color]="'primary'" type="submit"
+          [disabled]="form.invalid">
           <mat-icon svgIcon="check" class="icon-size-4" />
           {{ 'Submit' }}
         </button>

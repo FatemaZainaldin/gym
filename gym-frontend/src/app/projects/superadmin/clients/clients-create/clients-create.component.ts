@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterModule } from '@angular/router';
 import { StepComponent } from '@/app/shared/components/stepper/step/step.component';
-import { StepperComponent } from '@/app/shared/components/stepper/stepper/stepper.component';
+import { ConfirmStepComponent } from './steps/confirm-step/confirm-step.component';
 import { DetailsStepComponent } from './steps/details-step/details-step.component';
+import { SubscriptionStepComponent } from './steps/subscription-step/subscription-step.component';
+import { StepperComponent } from '@/app/shared/components/stepper/stepper/stepper.component';
+import { ClientsService } from '../clients.service';
 
 @Component({
   imports: [
@@ -23,7 +26,9 @@ import { DetailsStepComponent } from './steps/details-step/details-step.componen
     StepComponent,
 
     //Steps
-    DetailsStepComponent
+    DetailsStepComponent,
+    SubscriptionStepComponent,
+    ConfirmStepComponent
 
   ],
   selector: 'app-clients-create',
@@ -31,12 +36,17 @@ import { DetailsStepComponent } from './steps/details-step/details-step.componen
 })
 export class ClientsCreateComponent implements OnInit {
   detailsGroup!: FormGroup;
+  subscriptionGroup!: FormGroup;
+  isSubmitting = false;
+
   form!: FormGroup;
 
+  private readonly _fb = inject(FormBuilder);
+  private clientsService = inject(ClientsService)
 
-  constructor(private _fb: FormBuilder) { }
-
-  ngOnInit(): void { this._buildForm(); }
+  ngOnInit(): void {
+    this._buildForm();
+  }
 
   // ── Form ─────────────────────────────────────────────────────────────────
   // Parent only owns form construction — all field logic lives in step components
@@ -53,19 +63,33 @@ export class ClientsCreateComponent implements OnInit {
       internalNotes: ['', []],
     });
 
+    this.subscriptionGroup = this._fb.group({
+      plan: ['', [Validators.required, Validators.maxLength(150)]],
+      trialEndsAt: [''],
+    });
 
     this.form = this._fb.group({
       personal: this.detailsGroup,
-
+      subscription: this.subscriptionGroup,
     });
   }
- 
+
 
   onSubmit(): void {
-    debugger
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-    console.log('Payload:', this.form.getRawValue());
-    setTimeout(() => { }, 1500);
+    this.isSubmitting = true;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { personal, subscription } = this.form.getRawValue();
+    const body = {
+      ...personal,
+      ...subscription,
+    };
+
+    this.clientsService.createClient(body).subscribe(res => {
+
+    });
   }
 
 }

@@ -1,0 +1,71 @@
+<div class="bg-gray-50 overflow-hidden">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="check_circle"></mat-icon>
+    <span class="text-lg font-semibold tracking-tight">Review & Confirm</span>
+  </div>
+
+  <div class="p-6 space-y-6">
+
+    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b">
+        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Gym Info</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
+        <div>
+          <p class="text-sm text-secondary">Name</p>
+          <p class="mt-1 text-base font-semibold">{{ personalValue.name || '—' }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Subdomain</p>
+          <p class="mt-1 text-base font-semibold">{{ personalValue.subdomain || '—' }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Country</p>
+          <p class="mt-1 text-base font-semibold">{{ personalValue.country || '—' }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Timezone</p>
+          <p class="mt-1 text-base font-semibold">{{ personalValue.timezone || '—' }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b">
+        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Admin Contact</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
+        <div>
+          <p class="text-sm text-secondary">Admin email</p>
+          <p class="mt-1 text-base font-semibold">{{ personalValue.adminEmail || '—' }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Credentials</p>
+          <p class="mt-1 text-base font-semibold">Sent by email on create</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b">
+        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Subscription</div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
+        <div>
+          <p class="text-sm text-secondary">Plan</p>
+          <p class="mt-1 text-base font-semibold">{{ planLabel }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Trial</p>
+          <p class="mt-1 text-base font-semibold">{{ trialLabel }}</p>
+        </div>
+        <div class="sm:col-span-2">
+          <p class="text-sm text-secondary">Status</p>
+          <p
+            class="mt-1 inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold text-amber-700">
+            {{ statusLabel }}</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

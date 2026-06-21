@@ -6,44 +6,36 @@
 
       @for (step of steps; track step; let i = $index; let last = $last) {
 
-        <button
-          type="button"
-          (click)="goTo(i)"
-          class="flex items-center gap-2 shrink-0"
-          [disabled]="i > furthestStep">
+      <button type="button" (click)="goTo(i)" class="flex items-center gap-2 shrink-0" [disabled]="i > furthestStep">
 
-          <div
-            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all"
-            [ngClass]="{
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all"
+          [ngClass]="{
               'bg-primary-600 text-gray-50 shadow-md ': i === currentStep,
               'bg-green-600 text-white':         i < currentStep,
               'bg-gray-100 text-secondary':      i > currentStep
             }">
-            @if (i < currentStep) {
-              <mat-icon class="icon-size-4 text-white" svgIcon="check"/>
-            } @else {
-              {{ i + 1 }}
-            }
-          </div>
+          @if (i
+          < currentStep) { <mat-icon class="icon-size-4 text-white" svgIcon="check" />
+          } @else {
+          {{ i + 1 }}
+          }
+        </div>
 
-          <span
-            class=" sm:block text-sm font-medium transition-colors"
-            [ngClass]="{
+        <span class=" sm:block text-sm font-medium transition-colors" [ngClass]="{
               'text-primary':   i === currentStep,
               'text-green-600': i < currentStep,
               'text-secondary': i > currentStep
             }">
-            {{ step.label }}
-          </span>
+          {{ step.label }}
+        </span>
 
-        </button>
+      </button>
 
-        @if (!last) {
-          <div
-            class="flex-1 mx-3 h-0.5 rounded-full transition-all"
-            [ngClass]="i < currentStep ? 'bg-primary-600' : 'bg-gray-200'">
-          </div>
-        }
+      @if (!last) {
+      <div class="flex-1 mx-3 h-0.5 rounded-full transition-all"
+        [ngClass]="i < currentStep ? 'bg-primary-600' : 'bg-gray-200'">
+      </div>
+      }
 
       }
 
@@ -65,22 +57,25 @@
 
       <!-- NAV BUTTONS -->
       <div class="flex items-center justify-between pb-8">
+        <div>
 
-        <button
-          mat-stroked-button
-          type="button"
-          (click)="prev()"
-          [class.invisible]="currentStep === 0">
-          <mat-icon svgIcon="arrow-left" class="icon-size-4 font-normal"/>
-          Back
-        </button>
+          <button mat-stroked-button type="button" (click)="prev()" [class.invisible]="currentStep === 0">
+            <mat-icon svgIcon="arrow-left" class="icon-size-4 font-normal" />
+            Back
+          </button>
+        </div>
+
 
         @if (!isLastStep) {
+        <div>
           <button mat-flat-button [color]="'primary'" type="button" (click)="next()">
             Next
           </button>
+        </div>
         } @else {
+        <div>
           <ng-content select="[stepperSubmit]"></ng-content>
+        </div>
         }
 
       </div>
