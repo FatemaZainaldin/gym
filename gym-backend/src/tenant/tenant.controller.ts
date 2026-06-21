@@ -10,7 +10,7 @@ import { UpdateTenantDTO } from './dto/update-tenant-dto';
 import { TenantFilterDTO } from './dto/tenant-filter.dto';
 import { TenantStatus } from './entities/tenant.entity';
 
-@Controller('superadmin/tenant')
+@Controller('superadmin/tenants')
 @UseGuards(RolesGuard)
 @Roles(Role.SUPER_ADMIN)
 

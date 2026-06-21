@@ -25,7 +25,7 @@ export class LoginResponse {
   role: Role;
   phone?: string;
   avatar?: string;
-  modules: NavItem[];
+  modules?: NavItem[];
 }
 // What we put inside the JWT access token
 export interface JwtPayload {
@@ -245,13 +245,34 @@ export class AuthService {
     // Find all navigation items for user's role
     const navItems = await this.navItemRepo.find();
 
-    const currentModules = navItems?.filter(item => item.roles?.includes(user.role)) || [];
+    const filteredModules = navItems?.filter(item => item.roles?.includes(user.role)) || [];
+
+    // Build hierarchy
+    const moduleMap = new Map();
+    const modules = [];
+
+    // First pass: Add all modules to map with empty children
+    for (const item of filteredModules) {
+      moduleMap.set(item.id, { ...item, children: [] });
+    }
+
+    // Second pass: Build parent-child relationships
+    for (const item of filteredModules) {
+      if (item.parentId) {
+        const parent = moduleMap.get(item.parentId);
+        if (parent) {
+          parent.children.push(moduleMap.get(item.id));
+        }
+      } else {
+        modules.push(moduleMap.get(item.id));
+      }
+    }
 
     const { password, ...userWithoutPassword } = user;
 
     return {
       ...userWithoutPassword,
-      ...currentModules && ({ modules: currentModules })
+      ...(modules.length > 0 && { modules })
     };
   }
 

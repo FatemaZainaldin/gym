@@ -2,33 +2,33 @@ version: '3.9'
 
 services:
 
-  postgres:
-    image: postgres:16-alpine
-    container_name: badan_postgres
+  db:
+    image: postgres:15
+    container_name: gym_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB:       ${DB_NAME:-gym_db}
-      POSTGRES_USER:     ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gym_db
     ports:
       - "5432:5432"
     volumes:
-      - badan_postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: badan_redis
+    container_name: redis
     restart: unless-stopped
     command: redis-server --requirepass ${REDIS_PASSWORD:-redis_secret}
     ports:
       - "6379:6379"
     volumes:
-      - badan_redis_data:/data
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -37,22 +37,22 @@ services:
 
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: badan_mailhog
+    container_name: mailhog
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP — NestJS sends emails here
-      - "8025:8025"   # Web UI — open http://localhost:8025 to read emails
+      - "1025:1025"
+      - "8025:8025"
     volumes:
-      - badan_mailhog_data:/maildir
+      - mailhog_data:/maildir
 
   nestjs:
     build:
       context: ./gym-backend
       dockerfile: Dockerfile
-    container_name: badan_backend
+    container_name: backend
     restart: unless-stopped
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -62,9 +62,9 @@ services:
       - "3000:3000"
     volumes:
       - ./gym-backend:/app
-      - /app/node_modules          # prevent host node_modules overwriting container's
+      - /app/node_modules
 
 volumes:
-  badan_postgres_data:
-  badan_redis_data:
-  badan_mailhog_data:
+  postgres_data:
+  redis_data:
+  mailhog_data:

@@ -20,7 +20,7 @@ export const routes: Route[] = [
     path: 'superadmin',
     canActivate: [authGuard, roleGuard],
     data: { roles: ['super_admin'] },
-    loadChildren: () => import('./projects/admin/admin.routes'),
+    loadChildren: () => import('./projects/superadmin/superadmin.routes'),
   },
   {
     path: 'admin',

@@ -13,6 +13,9 @@ export class NavItem extends BaseEntity {
   @Column({ length: 100 })
   title: string;
 
+  @Column({ length: 100 })
+  titleAr: string;
+
   @Column({ length: 100, nullable: true })
   icon?: string;              // heroicons name e.g. 'heroicons_outline:users'
 

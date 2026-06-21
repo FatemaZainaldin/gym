@@ -25,7 +25,7 @@ export interface AuthUser {
   email: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'trainer' | 'customer';
+  role: 'admin' | 'trainer' | 'customer' | 'super_admin';
   avatar?: string;
   modules: NavItem[];
 }

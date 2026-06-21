@@ -78,7 +78,6 @@
         @if (!isLastStep) {
           <button mat-flat-button [color]="'primary'" type="button" (click)="next()">
             Next
-            <mat-icon svgIcon="arrow-right" class="icon-size-4"/>
           </button>
         } @else {
           <ng-content select="[stepperSubmit]"></ng-content>

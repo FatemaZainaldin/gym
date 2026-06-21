@@ -1,0 +1,42 @@
+<div class="flex flex-col flex-auto min-w-0">
+
+  <!-- PAGE HEADER -->
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-4 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    <div class="flex items-center gap-4">
+      <button mat-icon-button [routerLink]="['../']">
+        <mat-icon svgIcon="arrow-left"></mat-icon>
+      </button>
+      <div>
+        <div class="text-4xl font-extrabold tracking-tight leading-none">Add new client</div>
+        <div class="ml-0.5 font-medium text-secondary">Complete all steps to create the client profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEPPER -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <app-stepper (submitted)="onSubmit()" >
+
+      <!-- Step 1 -->
+      <app-step label="Details" [formGroup]="detailsGroup">
+        <app-details-step [formGroup]="detailsGroup"></app-details-step>
+      </app-step>
+
+
+      <!-- Step 3 -->
+      <app-step label="Subscription" [optional]="true">
+      </app-step>
+
+      <!-- Step 4 -->
+      <app-step label="Confirm">
+        <button stepperSubmit mat-flat-button [color]="'primary'" type="submit" [disabled]="form.invalid">
+          <mat-icon svgIcon="check" class="icon-size-4" />
+          {{ 'Submit' }}
+        </button>
+      </app-step>
+
+    </app-stepper>
+  </form>
+
+</div>

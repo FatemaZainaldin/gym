@@ -1058,6 +1058,17 @@
       height: auto;
       background: var(--mat-sidenav-content-background-color);
     }
+
+    /* Ensure content stacking so children (like upload overlays) can appear above the sidenav */
+    .mat-drawer-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Keep the drawer lower in stacking order when in side mode */
+    .mat-drawer {
+      z-index: 0;
+    }
   }
 
   /* ------------------------------------------------------------------------ */

@@ -1,0 +1,81 @@
+<div class="bg-gray-50 overflow-hidden" [formGroup]="formGroup">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="user" />
+    <span class="text-lg font-semibold tracking-tight">Details</span>
+  </div>
+
+  <div class="p-6">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Name<span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="name" placeholder="Name" />
+        </mat-form-field>
+      </div>
+
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Subdomain<span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput formControlName="subdomain" placeholder="Subdomain" />
+        </mat-form-field>
+      </div>
+
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Country</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="country" placeholder="Country">
+            <mat-option value="">Please select</mat-option>
+            <mat-option value="bahrain">Bahrain</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">TimeZone</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-select formControlName="timezone" placeholder="TimeZone">
+            <mat-option value="">Please select</mat-option>
+            <mat-option value="asia">Asia/Bahrain</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Phone <span class="text-red-500">*</span></p>
+        <mat-form-field appearance="outline" class="w-full">
+          <span matTextPrefix>+973&nbsp;</span>
+          <input matInput formControlName="phone" placeholder="Phone" />
+        </mat-form-field>
+      </div>
+
+      <div>
+        <p class="mb-2 text-sm font-medium">Email</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <input matInput type="email" formControlName="adminEmail" placeholder="Email" />
+        </mat-form-field>
+      </div>
+
+      <div class="sm:col-span-2">
+        <p class="mb-2 text-sm font-medium">Logo</p>
+        <div class="relative overflow-hidden w-full z-50">
+          <app-file-upload formControlName="logoUrl" accept="image/*" [maxSizeMb]="2"
+            [hints]="['Recommended: 400×400px', 'Transparent bg preferred']" />
+        </div>
+      </div>
+
+
+
+      <div class="sm:col-span-2">
+        <p class="mb-2 text-sm font-medium">Internal Notes</p>
+        <mat-form-field appearance="outline" class="w-full">
+          <textarea matInput formControlName="internalNotes" rows="3" placeholder="Internal Notes"></textarea>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </div>
+</div>
