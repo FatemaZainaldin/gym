@@ -73,7 +73,7 @@ export class TenantService {
 
         if (search) {
             query.andWhere(
-                '(tenant.name ILIKE :search OR tenant.subdomain ILIKE :search OR tenant.adminEmail ILIKE :search)',
+                '(tenant.name ILIKE :search OR tenant.subdomain ILIKE :search OR tenant.adminEmail ILIKE :search OR tenant.phone ILIKE :search)',
                 { search: `%${search}%` }
             );
         }

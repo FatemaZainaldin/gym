@@ -15,6 +15,14 @@ const ClientsRoutes: Routes = [
         (m) => m.ClientsCreateComponent
       ),
   },
+
+    {
+    path: "edit/:id",
+    loadComponent: () =>
+      import("./clients-create/clients-create.component").then(
+        (m) => m.ClientsCreateComponent
+      ),
+  },
 ];
 
 export default ClientsRoutes;

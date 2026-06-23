@@ -1,2 +1,3 @@
 <app-smart-table [columns]="columns" [data]="data()" [paginationMeta]="paginationMeta()" [loading]="loading()"
-  (stateChange)="onTableStateChange($event)" />
+  (stateChange)="onTableStateChange($event)" (onDelete)="onDelete($event)"
+  [globalSearchPlaceholder]="'Search by Name ,Subdomain,phone and Email'" />

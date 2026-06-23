@@ -1,71 +1,68 @@
-<div class="bg-gray-50 overflow-hidden">
-  <div class="flex items-center gap-3 px-6 py-4 border-b">
-    <mat-icon class="text-primary icon-size-5" svgIcon="check_circle"></mat-icon>
-    <span class="text-lg font-semibold tracking-tight">Review & Confirm</span>
+<div class="bg-gray-50 p-6 space-y-6">
+
+  <!-- Metric cards -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-gray-100 rounded-lg px-4 py-3">
+      <p class="text-xs text-gray-400 mb-1">Gym name</p>
+      <p class="text-sm font-medium text-gray-800">{{ personalValue.name || '—' }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg px-4 py-3">
+      <p class="text-xs text-gray-400 mb-1">Subdomain</p>
+      <p class="text-sm font-medium text-gray-800">{{ personalValue.subdomain || '—' }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg px-4 py-3">
+      <p class="text-xs text-gray-400 mb-1">Country</p>
+      <p class="text-sm font-medium text-gray-800">{{ personalValue.country || '—' }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg px-4 py-3">
+      <p class="text-xs text-gray-400 mb-1">Timezone</p>
+      <p class="text-sm font-medium text-gray-800">{{ personalValue.timezone || '—' }}</p>
+    </div>
   </div>
 
-  <div class="p-6 space-y-6">
+  <!-- Detail rows -->
+  <div class="border-t border-gray-100 pt-5 flex flex-col gap-3">
 
-    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Gym Info</div>
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="envelope" class="!text-base !w-4 !h-4" />
+        Admin email
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
-        <div>
-          <p class="text-sm text-secondary">Name</p>
-          <p class="mt-1 text-base font-semibold">{{ personalValue.name || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-secondary">Subdomain</p>
-          <p class="mt-1 text-base font-semibold">{{ personalValue.subdomain || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-secondary">Country</p>
-          <p class="mt-1 text-base font-semibold">{{ personalValue.country || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-secondary">Timezone</p>
-          <p class="mt-1 text-base font-semibold">{{ personalValue.timezone || '—' }}</p>
-        </div>
-      </div>
-    </section>
+      <span class="text-sm font-medium text-gray-800">{{ personalValue.adminEmail || '—' }}</span>
+    </div>
 
-    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Admin Contact</div>
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="crown" class="!text-base !w-4 !h-4" />
+        Plan
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
-        <div>
-          <p class="text-sm text-secondary">Admin email</p>
-          <p class="mt-1 text-base font-semibold">{{ personalValue.adminEmail || '—' }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-secondary">Credentials</p>
-          <p class="mt-1 text-base font-semibold">Sent by email on create</p>
-        </div>
-      </div>
-    </section>
+      <span class="text-sm font-medium text-gray-800">{{ planLabel }}</span>
+    </div>
 
-    <section class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b">
-        <div class="text-sm font-semibold uppercase tracking-wide text-secondary">Subscription</div>
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="calendar" class="!text-base !w-4 !h-4" />
+        Trial ends
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 px-6 py-6">
-        <div>
-          <p class="text-sm text-secondary">Plan</p>
-          <p class="mt-1 text-base font-semibold">{{ planLabel }}</p>
-        </div>
-        <div>
-          <p class="text-sm text-secondary">Trial</p>
-          <p class="mt-1 text-base font-semibold">{{ trialLabel }}</p>
-        </div>
-        <div class="sm:col-span-2">
-          <p class="text-sm text-secondary">Status</p>
-          <p
-            class="mt-1 inline-flex items-center rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold text-amber-700">
-            {{ statusLabel }}</p>
-        </div>
+      <span class="text-sm font-medium text-gray-800">{{ trialLabel }}</span>
+    </div>
+
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="circle-check" class="!text-base !w-4 !h-4" />
+        Status
       </div>
-    </section>
+      <span class="text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-700">
+        {{ statusLabel }}
+      </span>
+    </div>
+
   </div>
+
+  <!-- Footer note -->
+  <div class="flex items-center gap-2 pt-1 border-t border-gray-100">
+    <mat-icon svgIcon="info" class="!text-sm !w-3.5 !h-3.5 text-gray-400" />
+    <span class="text-xs text-gray-400">Credentials will be sent to the admin email on create.</span>
+  </div>
+
 </div>
