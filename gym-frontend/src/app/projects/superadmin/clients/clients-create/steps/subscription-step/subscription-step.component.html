@@ -101,26 +101,32 @@
               </svg> Custom workflows</li>
           </ul>
         </div>
+        <mat-error>
+          <form-error [control]="formGroup.get('plan')" field="Plan"></form-error>
+        </mat-error>
       </label>
 
     </div>
 
     <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
       <div class="flex items-center gap-4">
-        <mat-slide-toggle  (change)="onTrialChange()"  color="primary">Start with a trial period</mat-slide-toggle>
+        <mat-slide-toggle (change)="onTrialChange()" color="primary">Start with a trial period</mat-slide-toggle>
       </div>
-
+      @if (trialEnabled) {
       <div class="w-40">
         <mat-form-field appearance="outline" class="w-full">
-          <mat-select placeholder="Trial duration" formControlName="trialEndsAt" 
-          (selectionChange)="updateTrialEndsAt($event.value)"
-           >
+          <mat-select placeholder="Trial duration" formControlName="trialEndsAt"
+            (selectionChange)="updateTrialEndsAt($event.value)">
             <mat-option value="7">7 days</mat-option>
             <mat-option value="14">14 days</mat-option>
             <mat-option value="30">30 days</mat-option>
           </mat-select>
+          <mat-error>
+            <form-error [control]="formGroup.get('trialEndsAt')" field="Trial duration"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
+    }
     </div>
 
   </div>

@@ -38,6 +38,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   // --- Outputs ---
   stateChange = output<TableRequestEvent>();
   rowAction = output<{ action: TableActionType; row: T }>();
+  onCopy = output<T>();
   onEdit = output<T>();
   onDelete = output<T>();
   onActivate = output<T>();
@@ -105,7 +106,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
           if (raw == null) return false;
           const rowDate = new Date(raw);
           if (from && rowDate < new Date(from)) return false;
-          if (to   && rowDate > new Date(to))   return false;
+          if (to && rowDate > new Date(to)) return false;
           return true;
         });
         continue;
@@ -296,9 +297,9 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
       const d = new Date(raw);
       if (!isNaN(d.getTime())) {
         const opts: Record<string, Intl.DateTimeFormatOptions> = {
-          short:    { day: '2-digit', month: 'short', year: 'numeric' },
-          long:     { day: '2-digit', month: 'long',  year: 'numeric' },
-          time:     { hour: '2-digit', minute: '2-digit' },
+          short: { day: '2-digit', month: 'short', year: 'numeric' },
+          long: { day: '2-digit', month: 'long', year: 'numeric' },
+          time: { hour: '2-digit', minute: '2-digit' },
           datetime: { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' },
         };
         return d.toLocaleDateString('en-GB', opts[col.dateFormat ?? 'short']);
@@ -312,6 +313,10 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     this.route.navigateByUrl(`${this.getBasePath()}/edit/${id}`);
   }
 
+  onCopyRoute(id: string) {
+    this.route.navigateByUrl(`${this.getBasePath()}/new/${id}`);
+  }
+
   getBasePath(): string {
     return this.route.url.replace(/^\/+/, '');
   }
@@ -322,6 +327,10 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
       case 'edit':
         this.onEditRoute(row?.['id']);
         this.onEdit.emit(row);
+        break;
+      case 'copy':
+        this.onCopyRoute(row?.['id']);
+        this.onCopy.emit(row);
         break;
       case 'delete':
         this.onDelete.emit(row);
@@ -337,23 +346,28 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
 
   protected getActionLabel(action: TableActionType): string {
     switch (action) {
-      case 'edit':       return 'Edit';
-      case 'delete':     return 'Delete';
-      case 'activate':   return 'Activate';
+      case 'edit': return 'Edit';
+      case 'delete': return 'Delete';
+      case 'activate': return 'Activate';
       case 'deactivate': return 'Deactivate';
-      default:           return action;
+      default: return action;
     }
   }
 
   protected getActionButtonClasses(action: TableActionType): string {
     switch (action) {
-      case 'edit':       return 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100';
-      case 'delete':     return 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100';
-      case 'activate':   return 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
+      case 'edit': return 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100';
+      case 'delete': return 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100';
+      case 'activate': return 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100';
       case 'deactivate': return 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100';
-      default:           return 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50';
+      default: return 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50';
     }
   }
+
+  getVisibleActions(col: ColumnDef<T>, row: T): TableActionType[] {
+  if (!col.actions?.length) return [];
+  return col.actionCondition ? col.actionCondition(row) : col.actions;
+}
 
   getColumnFilter(key: string): any {
     return this.columnFilters()[key] ?? '';

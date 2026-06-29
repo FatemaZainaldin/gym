@@ -1,198 +1,180 @@
 <ng-container>
 
-      <!-- Drop Zone -->
-      <div
-        class="relative border border-dashed rounded-xl transition-all duration-150 cursor-pointer text-center"
-        [class]="isDragging()
+  <!-- Drop Zone -->
+  <div class="relative border border-dashed rounded-xl transition-all duration-150 cursor-pointer text-center" [class]="isDragging()
           ? 'border-violet-500 bg-violet-50'
           : hasErrors()
           ? 'border-red-400 bg-red-50'
-          : 'border-gray-300 bg-white hover:border-violet-400 hover:bg-violet-50'"
-        (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave()"
-        (drop)="onDrop($event)"
-        (click)="fileInput.click()"
-      >
-        <input
-          #fileInput
-          type="file"
-          class="hidden"
-          [accept]="accept"
-          [multiple]="multiple"
-          (change)="onFileSelected($event)"
-        />
+          : 'border-gray-300 bg-white hover:border-violet-400 hover:bg-violet-50'" (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="fileInput.click()">
+    <input #fileInput type="file" class="hidden" [accept]="accept" [multiple]="multiple"
+      (change)="onFileSelected($event)" />
 
-        <div class="py-8 px-4">
-          <!-- Icon -->
-          <div class="flex justify-center mb-3">
-            <div class="w-12 h-12 rounded-full flex items-center justify-center"
-              [class]="isDragging() ? 'bg-violet-100' : 'bg-gray-100'">
-              <svg class="w-6 h-6" [class]="isDragging() ? 'text-violet-600' : 'text-gray-400'"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Text -->
-          <p class="text-sm font-medium text-gray-700">
-            <span class="text-violet-600">Click to upload</span> or drag and drop
-          </p>
-          <p class="text-xs text-gray-400 mt-1">{{ acceptLabel }} · Max {{ maxSizeMb }}MB{{ multiple ? ' · Up to ' + maxFiles + ' files' : '' }}</p>
-
-          <!-- Chips -->
-          <div class="flex flex-wrap gap-2 justify-center mt-3" *ngIf="hints.length">
-            <span *ngFor="let hint of hints"
-              class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
-              {{ hint }}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Single Image Preview -->
-      <div *ngIf="!multiple && files().length && files()[0].status !== 'error'" class="mt-3">
-        <div class="relative inline-block">
-          <img
-            *ngIf="files()[0].preview"
-            [src]="files()[0].preview"
-            alt="Preview"
-            class="w-24 h-24 object-cover rounded-xl border border-gray-200"
-          />
-          <div *ngIf="!files()[0].preview"
-            class="w-24 h-24 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-            </svg>
-          </div>
-          <!-- Remove -->
-          <button
-            type="button"
-            (click)="removeFile(0, $event)"
-            class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center shadow">
-            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-          <!-- Progress ring for single -->
-          <div *ngIf="files()[0].status === 'uploading'"
-            class="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center">
-            <span class="text-white text-xs font-medium">{{ files()[0].progress }}%</span>
-          </div>
-        </div>
-        <p class="text-xs mt-2 flex items-center gap-1"
-          [class]="files()[0].status === 'done' ? 'text-emerald-600' : 'text-gray-400'">
-          <svg *ngIf="files()[0].status === 'done'" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <div class="py-8 px-4">
+      <!-- Icon -->
+      <div class="flex justify-center mb-3">
+        <div class="w-12 h-12 rounded-full flex items-center justify-center"
+          [class]="isDragging() ? 'bg-violet-100' : 'bg-gray-100'">
+          <svg class="w-6 h-6" [class]="isDragging() ? 'text-violet-600' : 'text-gray-400'" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
           </svg>
-          {{ files()[0].file.name }} · {{ formatSize(files()[0].file.size) }}
-        </p>
+        </div>
       </div>
 
-      <!-- Multi File List -->
-      <div *ngIf="multiple && files().length" class="mt-3 flex flex-col gap-2">
+      <!-- Text -->
+      <p class="text-sm font-medium text-gray-700">
+        <span class="text-violet-600">Click to upload</span> or drag and drop
+      </p>
+      <p class="text-xs text-gray-400 mt-1">{{ acceptLabel }} · Max {{ maxSizeMb }}MB{{ multiple ? ' · Up to ' +
+        maxFiles + ' files' : '' }}</p>
 
-        <!-- Image Grid (when accept is image) -->
-        <div *ngIf="isImageMode && showImageGrid" class="grid grid-cols-4 gap-2 mb-2">
-          <div *ngFor="let f of files(); let i = index"
-            class="relative aspect-square" [class.hidden]="!f.preview">
-            <img [src]="f.preview" [alt]="f.file.name"
-              class="w-full h-full object-cover rounded-lg border border-gray-200"/>
-            <button type="button" (click)="removeFile(i, $event)"
-              class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center">
-              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-            <div *ngIf="f.status === 'uploading'"
-              class="absolute inset-0 rounded-lg bg-black/40 flex items-center justify-center">
-              <span class="text-white text-xs font-medium">{{ f.progress }}%</span>
-            </div>
-          </div>
+      <!-- Chips -->
+      <div class="flex flex-wrap gap-2 justify-center mt-3" *ngIf="hints.length">
+        <span *ngFor="let hint of hints"
+          class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
+          {{ hint }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Single Image Preview -->
+  <div *ngIf="!multiple && files().length && files()[0].status !== 'error'" class="mt-3">
+    <div class="relative inline-block">
+      <img *ngIf="files()[0].preview" [src]="files()[0].preview" alt="Preview"
+        class="w-24 h-24 object-cover rounded-xl border border-gray-200" />
+      <div *ngIf="!files()[0].preview"
+        class="w-24 h-24 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+        </svg>
+      </div>
+      <!-- Remove -->
+      <button type="button" (click)="removeFile(0, $event)"
+        class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center shadow">
+        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <!-- Progress ring for single -->
+      <div *ngIf="files()[0].status === 'uploading'"
+        class="absolute inset-0 rounded-xl bg-black/40 flex items-center justify-center">
+        <span class="text-white text-xs font-medium">{{ files()[0].progress }}%</span>
+      </div>
+    </div>
+    <p class="text-xs mt-2 flex items-center gap-1"
+      [class]="files()[0].status === 'done' ? 'text-emerald-600' : 'text-gray-400'">
+      <svg *ngIf="files()[0].status === 'done'" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      {{ files()[0].file.name }} · {{ formatSize(files()[0].file.size) }}
+    </p>
+  </div>
+
+  <!-- Multi File List -->
+  <div *ngIf="multiple && files().length" class="mt-3 flex flex-col gap-2">
+
+    <!-- Image Grid (when accept is image) -->
+    <div *ngIf="isImageMode && showImageGrid" class="grid grid-cols-4 gap-2 mb-2">
+      <div *ngFor="let f of files(); let i = index" class="relative aspect-square" [class.hidden]="!f.preview">
+        <img [src]="f.preview" [alt]="f.file.name"
+          class="w-full h-full object-cover rounded-lg border border-gray-200" />
+        <button type="button" (click)="removeFile(i, $event)"
+          class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div *ngIf="f.status === 'uploading'"
+          class="absolute inset-0 rounded-lg bg-black/40 flex items-center justify-center">
+          <span class="text-white text-xs font-medium">{{ f.progress }}%</span>
         </div>
+      </div>
+    </div>
 
-        <!-- File rows (non-images or when grid is off) -->
-        <div *ngFor="let f of files(); let i = index"
-          [class.hidden]="isImageMode && showImageGrid && f.preview && f.status !== 'error'"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors"
-          [class]="f.status === 'error'
+    <!-- File rows (non-images or when grid is off) -->
+    <div *ngFor="let f of files(); let i = index"
+      [class.hidden]="isImageMode && showImageGrid && f.preview && f.status !== 'error'"
+      class="flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-colors" [class]="f.status === 'error'
             ? 'border-red-300 bg-red-50'
             : f.status === 'done'
             ? 'border-emerald-300 bg-emerald-50'
             : 'border-gray-200 bg-white'">
 
-          <!-- Thumb or icon -->
-          <div class="w-9 h-9 flex-shrink-0">
-            <img *ngIf="f.preview && f.status !== 'error'" [src]="f.preview"
-              class="w-9 h-9 object-cover rounded-md border border-gray-200"/>
-            <div *ngIf="!f.preview || f.status === 'error'"
-              class="w-9 h-9 rounded-md bg-gray-100 border border-gray-200 flex items-center justify-center">
-              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Info -->
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-800 truncate">{{ f.file.name }}</p>
-            <p class="text-xs text-gray-400">{{ formatSize(f.file.size) }}</p>
-
-            <!-- Progress bar -->
-            <div *ngIf="f.status === 'uploading'" class="mt-1.5 h-1 bg-gray-200 rounded-full overflow-hidden">
-              <div class="h-full bg-violet-500 rounded-full transition-all duration-300"
-                [style.width.%]="f.progress"></div>
-            </div>
-
-            <!-- Error -->
-            <p *ngIf="f.status === 'error'" class="text-xs text-red-500 mt-0.5 flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
-              </svg>
-              {{ f.error }}
-            </p>
-
-            <!-- Done -->
-            <p *ngIf="f.status === 'done'" class="text-xs text-emerald-600 mt-0.5 flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              {{ f.url ? 'Uploaded' : 'Ready' }}
-            </p>
-          </div>
-
-          <!-- Remove -->
-          <button type="button" (click)="removeFile(i, $event)"
-            class="flex-shrink-0 p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-
-        <!-- Summary bar -->
-        <div class="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-500">
-          <span>
-            <strong class="text-gray-700">{{ files().length }}</strong> file{{ files().length !== 1 ? 's' : '' }} ·
-            <span class="text-emerald-600">{{ doneCount() }} ready</span>
-            <span *ngIf="errorCount()" class="text-red-500"> · {{ errorCount() }} error{{ errorCount() !== 1 ? 's' : '' }}</span>
-            <span *ngIf="uploadingCount()" class="text-violet-500"> · {{ uploadingCount() }} uploading…</span>
-          </span>
-          <button type="button" (click)="clearAll()" class="text-red-400 hover:text-red-600 hover:underline">
-            Clear all
-          </button>
+      <!-- Thumb or icon -->
+      <div class="w-9 h-9 flex-shrink-0">
+        <img *ngIf="f.preview && f.status !== 'error'" [src]="f.preview"
+          class="w-9 h-9 object-cover rounded-md border border-gray-200" />
+        <div *ngIf="!f.preview || f.status === 'error'"
+          class="w-9 h-9 rounded-md bg-gray-100 border border-gray-200 flex items-center justify-center">
+          <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
         </div>
       </div>
 
-      <!-- Validation error -->
-      <p *ngIf="touched && hasErrors()" class="mt-2 text-xs text-red-500 flex items-center gap-1">
-        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
-        </svg>
-        {{ errorMessage() }}
-      </p>
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-800 truncate">{{ f.file.name }}</p>
+        <p class="text-xs text-gray-400">{{ formatSize(f.file.size) }}</p>
 
-    </ng-container>
+        <!-- Progress bar -->
+        <div *ngIf="f.status === 'uploading'" class="mt-1.5 h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full bg-violet-500 rounded-full transition-all duration-300" [style.width.%]="f.progress"></div>
+        </div>
+
+        <!-- Error -->
+        <p *ngIf="f.status === 'error'" class="text-xs text-red-500 mt-0.5 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          {{ f.error }}
+        </p>
+
+        <!-- Done -->
+        <p *ngIf="f.status === 'done'" class="text-xs text-emerald-600 mt-0.5 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {{ f.url ? 'Uploaded' : 'Ready' }}
+        </p>
+      </div>
+
+      <!-- Remove -->
+      <button type="button" (click)="removeFile(i, $event)"
+        class="flex-shrink-0 p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-red-500 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Summary bar -->
+    <div
+      class="flex items-center justify-between px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-500">
+      <span>
+        <strong class="text-gray-700">{{ files().length }}</strong> file{{ files().length !== 1 ? 's' : '' }} ·
+        <span class="text-emerald-600">{{ doneCount() }} ready</span>
+        <span *ngIf="errorCount()" class="text-red-500"> · {{ errorCount() }} error{{ errorCount() !== 1 ? 's' : ''
+          }}</span>
+        <span *ngIf="uploadingCount()" class="text-violet-500"> · {{ uploadingCount() }} uploading…</span>
+      </span>
+      <button type="button" (click)="clearAll()" class="text-red-400 hover:text-red-600 hover:underline">
+        Clear all
+      </button>
+    </div>
+  </div>
+
+  <!-- Validation error -->
+  <p *ngIf="touched && hasErrors()" class="mt-2 text-xs text-red-500 flex items-center gap-1">
+    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+    </svg>
+    {{ errorMessage() }}
+  </p>
+
+</ng-container>

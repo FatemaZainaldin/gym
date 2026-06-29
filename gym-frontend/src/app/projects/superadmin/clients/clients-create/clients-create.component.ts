@@ -5,12 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ToastService } from '@/app/core/toast/toast.service';
 import { StepComponent } from '@/app/shared/components/stepper/step/step.component';
+import { StepperComponent } from '@/app/shared/components/stepper/stepper/stepper.component';
+import { ClientsService } from '../clients.service';
 import { ConfirmStepComponent } from './steps/confirm-step/confirm-step.component';
 import { DetailsStepComponent } from './steps/details-step/details-step.component';
 import { SubscriptionStepComponent } from './steps/subscription-step/subscription-step.component';
-import { StepperComponent } from '@/app/shared/components/stepper/stepper/stepper.component';
-import { ClientsService } from '../clients.service';
 
 @Component({
   imports: [
@@ -35,79 +36,84 @@ import { ClientsService } from '../clients.service';
   templateUrl: './clients-create.component.html',
 })
 export class ClientsCreateComponent implements OnInit {
-  detailsGroup!: FormGroup;
-  subscriptionGroup!: FormGroup;
-  isSubmitting = false;
-  isEditMode = false;
-  isLoadingData = false;
 
   form!: FormGroup;
+  detailsGroup!: FormGroup;
+  subscriptionGroup!: FormGroup;
+
+  isSubmitting = false;
+  isEditMode = false;
+
   id: string | null = null;
 
+  private router = inject(Router);
+  private toast = inject(ToastService);
+  private route = inject(ActivatedRoute);
   private readonly _fb = inject(FormBuilder);
   private clientsService = inject(ClientsService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
 
   ngOnInit(): void {
     this._buildForm();
+    const segments = this.route.snapshot.url.map(s => s.path);
     this.id = this.route.snapshot.paramMap.get('id');
-    if (this.id) {
-      this.isEditMode = true;
-      this.getClientById(this.id);
+
+    const isCopy = segments?.includes('new') && this.id;
+    const isEdit = segments?.includes('edit');
+
+    this.isEditMode = isEdit;
+    if (isCopy || isEdit) {
+      this.getClientById(this.id!);
     }
+
   }
 
   private _buildForm(): void {
     this.detailsGroup = this._fb.group({
-      name:          ['', [Validators.required, Validators.maxLength(150)]],
-      subdomain:     ['', [Validators.required, Validators.maxLength(100)]],
-      country:       ['', [Validators.maxLength(100)]],
-      timezone:      ['', [Validators.maxLength(100)]],
-      logoUrl:       ['', [Validators.maxLength(500)]],
-      phone:         ['', [Validators.maxLength(20)]],
-      adminEmail:    ['', [Validators.required, Validators.maxLength(255)]],
+      name: ['', [Validators.required, Validators.maxLength(150)]],
+      subdomain: ['', [Validators.required, Validators.maxLength(100)]],
+      country: ['', [Validators.required, Validators.maxLength(100)]],
+      timezone: ['', [Validators.required, Validators.maxLength(100)]],
+      logoUrl: ['', [Validators.required]],
+      phone: ['', [Validators.required, Validators.maxLength(20)]],
+      adminEmail: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
       internalNotes: [''],
     });
 
     this.subscriptionGroup = this._fb.group({
-      plan:        ['', [Validators.required, Validators.maxLength(150)]],
-      trialEndsAt: [''],
+      plan: ['', [Validators.required, Validators.maxLength(150)]],
+      trialEndsAt: [null],
     });
 
     this.form = this._fb.group({
-      personal:     this.detailsGroup,
+      personal: this.detailsGroup,
       subscription: this.subscriptionGroup,
     });
   }
 
   getClientById(id: string): void {
-    this.isLoadingData = true;
-    this.form.disable(); // lock form while fetching
+    this.form.disable();
 
     this.clientsService.getClientById(id).subscribe({
       next: (res) => {
         res = res?.data;
         // patch each group separately so structure stays clean
         this.detailsGroup.patchValue({
-          name:          res.name,
-          subdomain:     res.subdomain,
-          country:       res.country,
-          timezone:      res.timezone,
-          logoUrl:       res.logoUrl,
-          phone:         res.phone,
-          adminEmail:    res.adminEmail,
+          name: this.isEditMode ? res.name : `${res.name} COPY`,
+          subdomain: this.isEditMode ? res.subdomain : `${res.subdomain} COPY`,
+          country: res.country,
+          timezone: res.timezone,
+          logoUrl: res.logoUrl,
+          phone: res.phone,
+          adminEmail: this.isEditMode ? res.adminEmail : null,
           internalNotes: res.internalNotes,
         });
         this.subscriptionGroup.patchValue({
-          plan:        res.plan,
+          plan: res.plan,
           trialEndsAt: res.trialEndsAt,
         });
         this.form.enable();
-        this.isLoadingData = false;
       },
       error: () => {
-        this.isLoadingData = false;
         this.form.enable();
       }
     });
@@ -128,13 +134,21 @@ export class ClientsCreateComponent implements OnInit {
       : this.clientsService.createClient(body);
 
     request$.subscribe({
-      next: () => {
+      next: (res) => {
         this.isSubmitting = false;
-        this.router.navigate(['/clients']);
+        this.toast.showMessage(res?.message, 'success');
+       this.home();
       },
-      error: () => {
+      error: (err) => {
         this.isSubmitting = false;
+        this.toast.showMessage(err?.error?.message, 'error');
+
       }
     });
+  }
+
+  home() {
+    return this.router.navigateByUrl(`/superadmin/clients`);
+
   }
 }

@@ -9,6 +9,7 @@ import { TrainersModule } from './trainers/trainers.module';
 import configuration from './config/configuration';
 import { TenantsModule } from './tenant/tenant.module';
 import { TenantInterceptor } from './tenant/tenant.interceptor';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { TenantInterceptor } from './tenant/tenant.interceptor';
       }),
     }),
     TenantsModule,
+    UploadModule,
     AuthModule,
     TrainersModule,
 

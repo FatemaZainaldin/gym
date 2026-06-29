@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '@/environments/environment';
 
 export interface UploadedFile {
   file: File;
@@ -45,7 +46,7 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
   @Input() uploadUrl = '';          // if provided, auto-uploads to this endpoint
   @Input() hints: string[] = [];
   @Input() showImageGrid = true;
-
+  @Input() emitAs: 'file' | 'base64' | 'url' = 'url';
   // ── State ────────────────────────────────────────────────────────────────
   files = signal<UploadedFile[]>([]);
   isDragging = signal(false);
@@ -188,10 +189,12 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
     this.files.update(prev => {
       const updated = [...prev];
       if (updated[idx]) updated[idx] = { ...updated[idx], status: 'uploading', progress: 0 };
-      return updated;
+      return updated;FileReader
     });
+    const base = environment.apiUrl;
+    const url = (`${base}${this.uploadUrl}`);
 
-    this.http.post<{ url: string }>(this.uploadUrl, form, {
+    this.http.post<{ url: string }>(url, form, {
       reportProgress: true,
       observe: 'events',
     }).subscribe({
@@ -238,16 +241,41 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
   }
 
   private emit() {
-    const done = this.files().filter(f => f.status === 'done' || (!this.uploadUrl && f.status === 'pending'));
+    const done = this.files().filter(f =>
+      f.status === 'done' || (!this.uploadUrl && f.status === 'pending')
+    );
+
     if (!this.multiple) {
       const f = done[0];
-      this.onChange(this.uploadUrl ? (f?.url ?? null) : (f?.file ?? null));
+      if (!f) { this.onChange(null); return; }
+
+      if (this.uploadUrl) {
+        this.onChange(f.url ?? null);
+      } else if (this.emitAs === 'base64') {
+        this.toBase64(f.file).then(b64 => this.onChange(b64)); // ← .then not await
+      } else {
+        this.onChange(f.file ?? null);
+      }
+
     } else {
-      this.onChange(this.uploadUrl
-        ? done.map(f => f.url).filter(Boolean)
-        : done.map(f => f.file)
-      );
+      if (this.uploadUrl) {
+        this.onChange(done.map(f => f.url).filter(Boolean));
+      } else if (this.emitAs === 'base64') {
+        Promise.all(done.map(f => this.toBase64(f.file)))
+          .then(results => this.onChange(results));
+      } else {
+        this.onChange(done.map(f => f.file));
+      }
     }
+  }
+
+  private toBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -270,8 +298,17 @@ export class FileUploadComponent implements ControlValueAccessor, Validator {
     if (!v) { this.files.set([]); return; }
     if (typeof v === 'string') {
       // Already uploaded URL — show as done
-      this.files.set([{ file: new File([], v.split('/').pop() ?? 'file'), url: v, progress: 100, status: 'done' }]);
+      this.files.set([{ file: new File([], v.split('/').pop() ?? 'file'), url: v,  preview: v, progress: 100, status: 'done' }]);
     }
+    if (Array.isArray(v)) {
+    this.files.set(v.map((url: string) => ({
+      file: new File([], url.split('/').pop() ?? 'file'),
+      url,
+      preview: url,      
+      progress: 100,
+      status: 'done',
+    })));
+  }
   }
 
   registerOnChange(fn: any) { this.onChange = fn; }

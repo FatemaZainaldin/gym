@@ -1,6 +1,7 @@
+import { ErrorComponent } from '@/app/shared/components/form-error/form-error.component';
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,6 +23,7 @@ import { Subscription } from 'rxjs';
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    ErrorComponent,
     MatIconModule],
   selector: 'app-subscription-step',
   templateUrl: './subscription-step.component.html',
@@ -32,7 +34,7 @@ export class SubscriptionStepComponent implements OnInit, OnDestroy {
 
   private _trialEndsAtSub?: Subscription;
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngOnDestroy(): void {
     this._trialEndsAtSub?.unsubscribe();
@@ -58,5 +60,15 @@ export class SubscriptionStepComponent implements OnInit, OnDestroy {
 
   onTrialChange(): void {
     this.trialEnabled = !this.trialEnabled;
+    const control = this.formGroup.get('trialEndsAt');
+
+    if (!this.trialEnabled) {
+      control?.setValue(null);
+      control?.clearValidators();
+    } else {
+      control?.setValidators([Validators.required]);
+    }
+
+    control?.updateValueAndValidity();
   }
 }

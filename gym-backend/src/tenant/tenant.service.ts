@@ -46,6 +46,15 @@ export class TenantService {
         return this.findTenantById(id);
     }
 
+        async activateTenant(id: string) {
+        await this.findTenantById(id);
+        await this.tenantRepository.update(id, {
+            status: TenantStatus.TRIAL,
+            suspendedAt: new Date()
+        });
+        return this.findTenantById(id);
+    }
+
     async deleteTenant(id: string) {
         await this.findTenantById(id);
         return this.tenantRepository.softDelete(id);

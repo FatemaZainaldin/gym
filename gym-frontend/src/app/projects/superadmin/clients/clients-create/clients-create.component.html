@@ -4,7 +4,7 @@
   <div
     class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-4 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
     <div class="flex items-center gap-4">
-      <button mat-icon-button [routerLink]="['../']">
+      <button mat-icon-button (click)="home()">
         <mat-icon svgIcon="arrow-left"></mat-icon>
       </button>
       <div>
@@ -32,13 +32,12 @@
       <!-- Step 4 -->
       <app-step label="Confirm">
         <app-confirm-step [formGroup]="form" [isSubmitting]="isSubmitting"></app-confirm-step>
-        <button stepperSubmit mat-flat-button class="inline-flex" [color]="'primary'" type="submit"
-          [disabled]="form.invalid">
-          <mat-icon svgIcon="check" class="icon-size-4" />
-          {{ 'Submit' }}
-        </button>
       </app-step>
-
+      <button stepperSubmit mat-flat-button color="primary" type="button" (click)="onSubmit()"
+        [disabled]="form.invalid || isSubmitting">
+        <mat-icon svgIcon="check" class="icon-size-4" />
+        {{ isSubmitting ? 'Submitting…' : 'Submit' }}
+      </button>
     </app-stepper>
   </form>
 

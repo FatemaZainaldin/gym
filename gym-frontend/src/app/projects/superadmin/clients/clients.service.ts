@@ -34,4 +34,13 @@ export class ClientsService {
     return this.http.delete(`${this.API}/${id}`);
   }
 
+    deactivateClient(id: string): Observable<any> {
+    return this.http.patch(`${this.API}/${id}/suspend`,{});
+  }
+
+    activateClient(id: string): Observable<any> {
+    return this.http.patch(`${this.API}/${id}/activate`,{});
+  }
+
+
 }

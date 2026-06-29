@@ -1,5 +1,5 @@
 export type SortDirection = 'ASC' | 'DESC' | '';
-export type TableActionType = 'edit' | 'delete' | 'activate' | 'deactivate';
+export type TableActionType = 'edit' | 'delete' | 'copy' | 'activate' | 'deactivate';
 
 export interface ColumnDef<T = any> {
   key: string;              // maps to property in data
@@ -17,7 +17,7 @@ export interface ColumnDef<T = any> {
   dateFormat?: 'short' | 'long' | 'time' | 'datetime';
   nullPlaceholder?: string; // defaults to '—' if omitted
   statusMap?: Record<string, StatusConfig> | true;
-
+  actionCondition?: (row: T) => TableActionType[];
   valueFormatter?: (value: any, row: T) => string;
 }
 

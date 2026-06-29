@@ -78,4 +78,16 @@ export class TenantController {
             { ...result });
     }
 
+      @Patch(':id/activate')
+    @HttpCode(HttpStatus.OK)
+    async activate(@Param('id') id: string) {
+        const result = await this.tenantService.activateTenant(id);
+        return success('TENANT_ACTIVATED',
+            {
+                en: 'Tenant activated successfully.',
+                ar: 'تم تحديث المدرب بنجاح.',
+            },
+            { ...result });
+    }
+
 }

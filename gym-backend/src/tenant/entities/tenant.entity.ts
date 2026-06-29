@@ -31,7 +31,7 @@ export class Tenant extends BaseEntity {
   @Column({ length: 100, nullable: true })
   timezone?: string;                    
 
-  @Column({ length: 500, nullable: true })
+  @Column({  nullable: true })
   logoUrl?: string;
 
   @Column({ length: 20, nullable: true })

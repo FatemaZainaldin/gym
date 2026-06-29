@@ -249,7 +249,7 @@
                 <mat-icon svgIcon="ellipsis-vertical" class="!text-base" />
               </button>
               <mat-menu #actionsMenu="matMenu">
-                @for (action of col.actions; track action) {
+                @for (action of getVisibleActions(col, row); track action) {
                 <button mat-menu-item type="button" (click)="onRowAction(action, row)">
                   {{ getActionLabel(action) }}
                 </button>
@@ -326,7 +326,7 @@
     </div>
 
     <!-- Page size selector -->
-<div class="relative inline-flex items-center  gap-2 text-md text-gray-500">
+    <div class="relative inline-flex items-center  gap-2 text-md text-gray-500">
       <span>Rows per page:</span>
       <select [value]="pageSize()" (change)="onPageSizeChange(+$any($event.target).value)" class="px-2 py-1  pr-6 border border-gray-300 rounded bg-white text-gray-700 text-md
                focus:outline-none focus:ring-1 focus:ring-primary appearance-none">
@@ -334,7 +334,7 @@
         <option [value]="s">{{ s }}</option>
         }
       </select>
-      <mat-icon svgIcon="chevron-down"  class="absolute  right-2 pointer-events-none !w-4 !h-4 text-gray-500">
+      <mat-icon svgIcon="chevron-down" class="absolute  right-2 pointer-events-none !w-4 !h-4 text-gray-500">
       </mat-icon>
     </div>
 

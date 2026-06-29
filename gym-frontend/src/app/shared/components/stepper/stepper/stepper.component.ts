@@ -53,7 +53,6 @@ export class StepperComponent implements AfterContentInit {
 
   next(): void {
     const current = this.steps[this.currentStep];
-
     if (current.formGroup && !current.optional) {
       Object.values(current.formGroup.controls).forEach(c => c.markAsTouched());
       if (current.formGroup.invalid) {

@@ -14,6 +14,7 @@ export interface AddClientForm {
     suspendedAt: Date | string;
     internalNotes?: string;
     featureFlags?: Record<string, boolean>;
+    id?:string;
 }
 
 export enum TenantStatus {

@@ -9,69 +9,89 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
       <div>
-        <p class="mb-2 text-sm font-medium">Name<span class="text-red-500">*</span></p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Name</mat-label>
           <input matInput formControlName="name" placeholder="Name" />
+          <mat-error>
+            <form-error [control]="formGroup.get('name')" field="Name"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
 
       <div>
-        <p class="mb-2 text-sm font-medium">Subdomain<span class="text-red-500">*</span></p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Subdomain</mat-label>
           <input matInput formControlName="subdomain" placeholder="Subdomain" />
+          <mat-error>
+            <form-error [control]="formGroup.get('subdomain')" field="Subdomain"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
 
       <div>
-        <p class="mb-2 text-sm font-medium">Country</p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Country</mat-label>
           <mat-select formControlName="country" placeholder="Country">
             <mat-option value="">Please select</mat-option>
             <mat-option value="bahrain">Bahrain</mat-option>
           </mat-select>
+          <mat-error>
+            <form-error [control]="formGroup.get('country')" field="Country"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
       <div>
-        <p class="mb-2 text-sm font-medium">TimeZone</p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>TimeZone</mat-label>
           <mat-select formControlName="timezone" placeholder="TimeZone">
             <mat-option value="">Please select</mat-option>
             <mat-option value="asia">Asia/Bahrain</mat-option>
           </mat-select>
+          <mat-error>
+            <form-error [control]="formGroup.get('timezone')" field="TimeZone"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
       <div>
-        <p class="mb-2 text-sm font-medium">Phone <span class="text-red-500">*</span></p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Phone</mat-label>
           <span matTextPrefix>+973&nbsp;</span>
           <input matInput formControlName="phone" placeholder="Phone" />
+          <mat-error>
+            <form-error [control]="formGroup.get('phone')" field="Phone"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
       <div>
-        <p class="mb-2 text-sm font-medium">Email</p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="adminEmail" placeholder="Email" />
+          <mat-error>
+            <form-error [control]="formGroup.get('adminEmail')" field="Email"></form-error>
+          </mat-error>
         </mat-form-field>
       </div>
 
       <div class="sm:col-span-2">
-        <p class="mb-2 text-sm font-medium">Logo</p>
+        <mat-label class="mb-4">Logo*</mat-label>
         <div class="relative overflow-hidden w-full z-50">
-          <app-file-upload formControlName="logoUrl" accept="image/*" [maxSizeMb]="2"
-            [hints]="['Recommended: 400×400px', 'Transparent bg preferred']" />
+          <app-file-upload formControlName="logoUrl" accept="image/*" [maxSizeMb]="2" uploadUrl="/upload" />
+          <mat-error>
+            <form-error [control]="formGroup.get('logoUrl')" field="Logo"></form-error>
+          </mat-error>
         </div>
       </div>
 
 
 
       <div class="sm:col-span-2">
-        <p class="mb-2 text-sm font-medium">Internal Notes</p>
         <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Internal Notes</mat-label>
           <textarea matInput formControlName="internalNotes" rows="3" placeholder="Internal Notes"></textarea>
         </mat-form-field>
       </div>
