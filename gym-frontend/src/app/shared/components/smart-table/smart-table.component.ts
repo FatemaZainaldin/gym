@@ -313,6 +313,10 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     this.route.navigateByUrl(`${this.getBasePath()}/edit/${id}`);
   }
 
+  onViewRoute(id: string) {
+    this.route.navigateByUrl(`${this.getBasePath()}/view/${id}`);
+  }
+
   onCopyRoute(id: string) {
     this.route.navigateByUrl(`${this.getBasePath()}/new/${id}`);
   }
@@ -320,7 +324,9 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   getBasePath(): string {
     return this.route.url.replace(/^\/+/, '');
   }
-
+   onRowClick(event:any) {
+    this.onViewRoute(event?.['id']);
+  }
   protected onRowAction(action: TableActionType, row: T) {
     this.rowAction.emit({ action, row });
     switch (action) {
@@ -365,9 +371,9 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   }
 
   getVisibleActions(col: ColumnDef<T>, row: T): TableActionType[] {
-  if (!col.actions?.length) return [];
-  return col.actionCondition ? col.actionCondition(row) : col.actions;
-}
+    if (!col.actions?.length) return [];
+    return col.actionCondition ? col.actionCondition(row) : col.actions;
+  }
 
   getColumnFilter(key: string): any {
     return this.columnFilters()[key] ?? '';

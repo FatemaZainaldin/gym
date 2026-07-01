@@ -24,6 +24,14 @@ const ClientsRoutes: Routes = [
       ),
   },
 
+
+   {
+    path: "view/:id",
+    loadComponent: () =>
+      import("./clients-view/clients-view.component").then(
+        (m) => m.ClientsViewComponent
+      ),
+  },
     {
     path: "edit/:id",
     loadComponent: () =>

@@ -179,8 +179,7 @@
     <table class="w-full border-collapse" [class.opacity-60]="loading()" [class.pointer-events-none]="loading()">
 
       <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <!-- ✅ resolvedColumns() — has statusMap injected -->
+        <tr >
           @for (col of resolvedColumns(); track col.key) {
           @if (!col.hideColumn) {
           <th [style.width]="col.width" (click)="onSort(col)"
@@ -208,8 +207,7 @@
         <!-- Skeleton rows while loading -->
         @if (loading()) {
         @for (i of [1,2,3,4,5]; track i) {
-        <tr>
-          <!-- ✅ visibleColumns() already derived from resolvedColumns() -->
+        <tr >
           @for (col of visibleColumns(); track col.key) {
           <td class="px-4 py-3">
             <div class="h-3.5 bg-gray-200 rounded animate-pulse w-3/4"></div>
@@ -232,7 +230,7 @@
         <!-- Data rows -->
         } @else {
         @for (row of paginatedRows(); track $index) {
-        <tr class="hover:bg-gray-50 transition-colors duration-100">
+        <tr class="hover:bg-gray-50 transition-colors duration-100 cursor-pointer"  (click)="onRowClick(row)" >
           <!-- ✅ resolvedColumns() so statusMap is always populated -->
           @for (col of resolvedColumns(); track col.key) {
           @if (!col.hideColumn) {
@@ -242,7 +240,7 @@
             <ng-container [ngTemplateOutlet]="col.cellTemplate"
               [ngTemplateOutletContext]="{ $implicit: row, value: row[col.key] }" />
             } @else if (col.actions?.length) {
-            <div class="relative inline-flex">
+            <div class="relative inline-flex" (click)="$event.stopPropagation()">
               <button type="button"
                 class="inline-flex items-center justify-center w-10 h-10 cursor-pointer text-gray-600 hover:bg-gray-50"
                 [matMenuTriggerFor]="actionsMenu" aria-label="Open row actions menu">

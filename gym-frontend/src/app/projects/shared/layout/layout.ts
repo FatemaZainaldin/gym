@@ -117,7 +117,7 @@ export class AdminLayout {
 
   get isFormMode(): boolean {
     const url = this.route.url;
-    return url.includes('/new') || url.includes('/edit');
+    return url.includes('/new') || url.includes('/edit') || url.includes('/view');
   }
 
   getBasePath(): string {

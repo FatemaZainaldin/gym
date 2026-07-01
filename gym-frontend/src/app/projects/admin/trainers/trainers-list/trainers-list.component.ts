@@ -65,26 +65,6 @@ export class TrainersListComponent implements OnInit {
     });
   }
 
-  onRowAction(event: { action: 'edit' | 'delete' | 'activate' | 'deactivate'; row: any }) {
-    switch (event.action) {
-      case 'edit':
-        // handle edit
-        console.log('Edit', event.row);
-        break;
-      case 'delete':
-        // handle delete
-        console.log('Delete', event.row);
-        break;
-      case 'activate':
-        // handle activate
-        console.log('Activate', event.row);
-        break;
-      case 'deactivate':
-        // handle deactivate
-        console.log('Deactivate', event.row);
-        break;
-    }
-  }
 
   onDelete(row: any) {
     const id = row?.id ?? row?._id;
