@@ -11,9 +11,15 @@ const routes: Routes = [
         path: "clients",
         loadChildren: () => import("./clients/clients.routes"),
       },
+       {
+        path: "users",
+        loadChildren: () => import("./users/users.routes"),
+      },
+      
       
     ],
   },
+  
 ];
 
 export default routes;

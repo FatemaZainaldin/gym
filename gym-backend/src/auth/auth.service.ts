@@ -40,6 +40,7 @@ export interface JwtPayload {
 
 // What we return to the client on login / refresh
 export interface AuthTokens {
+  mustChangePassword?: boolean;  // if true, Angular will redirect to change-password page
   accessToken: string;
   accessExpires: number;   // Unix timestamp — Angular knows when to refresh
 }
@@ -90,42 +91,51 @@ export class AuthService {
     return savedUser;
   }
 
-  // ── LOGIN ────────────────────────────────────────────────────────────────
-  async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshToken: string }> {
-    // 1. Find user — always lowercase email
-    const user = await this.userRepo.findOne({
-      where: { email: dto.email.toLowerCase().trim() }
-    });
+async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshToken: string, mustChangePassword?: boolean }> {
+  const user = await this.userRepo.findOne({
+    where: { email: dto.email.toLowerCase().trim() }
+  });
 
-    // 2. Constant-time comparison — prevent timing attacks
-    let validPassword = false;
-
-    if (user) {
-      validPassword = await user.validatePassword(dto.password);
-    } else {
-      // Use dummy comparison to prevent timing attacks
-      await bcrypt.compare(dto.password, '$2b$12$invalid_hash_to_waste_time');
-    }
-
-    if (!user || !validPassword) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    if (user.status !== UserStatus.ACTIVE) {
-      throw new ForbiddenException('Account is not active');
-    }
-
-    // 3. Issue tokens
-    const tokens = await this.issueTokens(user);
-
-    // 4. Log the login event (audit trail)
-    await this.redis.lpush(
-      `audit:login:${user.id}`,
-      JSON.stringify({ ip: ipAddress, at: new Date().toISOString() })
-    );
-
-    return tokens;
+  let validPassword = false;
+  if (user) {
+    validPassword = await user.validatePassword(dto.password);
+  } else {
+    await bcrypt.compare(dto.password, '$2b$12$invalid_hash_to_waste_time');
   }
+
+  if (!user || !validPassword) {
+    throw new UnauthorizedException('Invalid credentials');
+  }
+
+  if (user.status !== UserStatus.ACTIVE) {
+    throw new ForbiddenException('Account is not active');
+  }
+
+  // ── check mustChangePassword ─────────────────────────────────────────────
+  // Issue a short-lived token with limited scope if password change required
+ if (user.mustChangePassword) {
+  const tempToken = this.jwtService.sign(
+    { sub: user.id, scope: 'change-password' },
+    { expiresIn: '15m' }
+  );
+  return {
+    accessToken:        tempToken,
+    accessExpires:      Math.floor(Date.now() / 1000) + 15 * 60,
+    refreshToken:       '',
+    mustChangePassword: true,
+  };
+
+  }
+
+  const tokens = await this.issueTokens(user);
+
+  await this.redis.lpush(
+    `audit:login:${user.id}`,
+    JSON.stringify({ ip: ipAddress, at: new Date().toISOString() })
+  );
+
+  return tokens;
+}
 
   // ── REFRESH ──────────────────────────────────────────────────────────────
   async refresh(rawRefreshToken: string): Promise<AuthTokens & { refreshToken: string }> {
@@ -209,8 +219,31 @@ export class AuthService {
     console.log(`Password reset link: /reset-password?token=${token}`);
   }
 
-  // ── RESET PASSWORD ───────────────────────────────────────────────────────
   async resetPassword(token: string, newPassword: string): Promise<void> {
+  // verify the temp token
+  let payload: any;
+  try {
+    payload = this.jwtService.verify(token);
+  } catch {
+    throw new UnauthorizedException('Invalid or expired token.');
+  }
+
+  // make sure it's a change-password scoped token
+  if (payload.scope !== 'change-password') {
+    throw new ForbiddenException('Token is not valid for this action.');
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 12);
+
+  await this.userRepo.update(payload.sub, {
+    password:           hashed,
+    mustChangePassword: false,
+  });
+  
+}
+
+  // ── CHANGE PASSWORD THROUGH FORGOT PASSWORD  ───────────────────────────────────────────────────────
+  async changePassword(token: string, newPassword: string): Promise<void> {
     const userId = await this.redis.get(`reset:${token}`);
     if (!userId) throw new BadRequestException('Reset link is invalid or has expired');
 

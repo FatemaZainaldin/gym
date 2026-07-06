@@ -43,6 +43,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   onDelete = output<T>();
   onActivate = output<T>();
   onDeactivate = output<T>();
+  onResend = output<T>();
 
   // --- Internal reactive state ---
   protected page = signal(1);
@@ -86,7 +87,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     if (q) {
       rows = rows.filter(row =>
         this.columns().some(col => {
-          const v = row[col.key];
+          const v = this.getNestedValue(row, col.key);
           return v != null && String(v).toLowerCase().includes(q);
         })
       );
@@ -102,7 +103,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
         const { from, to } = val as DateRangeValue;
         if (!from && !to) continue;
         rows = rows.filter(row => {
-          const raw = row[key];
+          const raw = this.getNestedValue(row, key);
           if (raw == null) return false;
           const rowDate = new Date(raw);
           if (from && rowDate < new Date(from)) return false;
@@ -124,7 +125,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
 
       // text / select
       rows = rows.filter(row => {
-        const v = row[key];
+        const v = this.getNestedValue(row, key);
         return v != null && String(v).toLowerCase().includes(String(val).toLowerCase());
       });
     }
@@ -134,7 +135,8 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     const dir = this.sortDirection();
     if (col && dir) {
       rows.sort((a, b) => {
-        const av = a[col], bv = b[col];
+        const av = this.getNestedValue(a, col);
+        const bv = this.getNestedValue(b, col);
         if (av == null) return 1;
         if (bv == null) return -1;
         const cmp = av < bv ? -1 : av > bv ? 1 : 0;
@@ -287,27 +289,61 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
     this.emitState();
   }
 
-  // --- Cell value ---
-  getCellValue(row: T, col: ColumnDef<T>): string {
-    const raw = row[col.key];
-    if (col.valueFormatter) return col.valueFormatter(raw, row);
-    if (raw == null || raw === '') return col.nullPlaceholder ?? '—';
+  private getNestedValue(obj: any, path: string): any {
+    if (!obj || !path) return null;
 
-    if (col.filterType === 'date' || col.filterType === 'dateRange') {
-      const d = new Date(raw);
-      if (!isNaN(d.getTime())) {
-        const opts: Record<string, Intl.DateTimeFormatOptions> = {
-          short: { day: '2-digit', month: 'short', year: 'numeric' },
-          long: { day: '2-digit', month: 'long', year: 'numeric' },
-          time: { hour: '2-digit', minute: '2-digit' },
-          datetime: { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' },
-        };
-        return d.toLocaleDateString('en-GB', opts[col.dateFormat ?? 'short']);
-      }
-    }
-
-    return raw;
+    return path.split('.').reduce((current, key) => current?.[key], obj);
   }
+
+  // --- Cell value ---
+ getCellValue(row: T, col: ColumnDef<T>): string {
+  const raw = this.getNestedValue(row, col.key);
+
+  if (col.valueFormatter) {
+    return col.valueFormatter(raw, row);
+  }
+
+  if (raw == null || raw === '') {
+    return col.nullPlaceholder ?? '—';
+  }
+
+  if (col.filterType === 'date' || col.filterType === 'dateRange') {
+    const d = new Date(raw);
+
+    if (!isNaN(d.getTime())) {
+      const opts: Record<string, Intl.DateTimeFormatOptions> = {
+        short: {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        },
+        long: {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        },
+        time: {
+          hour: '2-digit',
+          minute: '2-digit',
+        },
+        datetime: {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        },
+      };
+
+      return d.toLocaleDateString(
+        'en-GB',
+        opts[col.dateFormat ?? 'short']
+      );
+    }
+  }
+
+  return String(raw);
+}
 
   onEditRoute(id: string) {
     this.route.navigateByUrl(`${this.getBasePath()}/edit/${id}`);
@@ -324,7 +360,7 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
   getBasePath(): string {
     return this.route.url.replace(/^\/+/, '');
   }
-   onRowClick(event:any) {
+  onRowClick(event: any) {
     this.onViewRoute(event?.['id']);
   }
   protected onRowAction(action: TableActionType, row: T) {
@@ -346,6 +382,10 @@ export class SmartTableComponent<T extends Record<string, any>> implements OnCha
         break;
       case 'deactivate':
         this.onDeactivate.emit(row);
+        break;
+
+      case 'resend':
+        this.onResend.emit(row);
         break;
     }
   }

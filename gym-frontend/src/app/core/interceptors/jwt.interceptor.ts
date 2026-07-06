@@ -18,7 +18,8 @@ export const jwtInterceptor: HttpInterceptorFn = (
   const isAuthEndpoint = req.url.includes('/auth/login')
     || req.url.includes('/auth/refresh')
     || req.url.includes('/auth/logout')
-    || req.url.includes('/auth/register');
+    || req.url.includes('/auth/register')
+    || req.url.includes('/auth/reset-password')
 
   // Proactive refresh: if token expires in < 60 seconds, refresh now
   const expiry = state.tokenExpiry();

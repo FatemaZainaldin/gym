@@ -15,6 +15,7 @@ import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
 import { ToastService } from "@/app/core/toast/toast.service";
 import { AuthService } from "../auth.service";
+import { AuthState } from "@/app/core/services/auth.state";
 
 @Component({
   selector: "auth-reset-password",
@@ -34,6 +35,7 @@ export default class AuthResetPassword {
   private router = inject(Router);
   private toast = inject(ToastService);
   private authService = inject(AuthService);
+  private state = inject(AuthState);
 
   // State
   protected resetPasswordFormModel = signal({
@@ -64,7 +66,10 @@ export default class AuthResetPassword {
 
   resetPassword(event: Event) {
     event.preventDefault();
-    this.authService.resetPassword({ password: this.resetPasswordFormModel().password }).subscribe({
+    if ( !this.state?.token()) {
+      return;
+    }
+    this.authService.resetPassword({ password: this.resetPasswordFormModel().password ,token: this.state?.token() }).subscribe({
       next: (res) => {
         this.toast.showMessage(res?.message, 'success')
         this.router.navigateByUrl("/auth/sign-in");
@@ -75,5 +80,8 @@ export default class AuthResetPassword {
         this.toast.showMessage(err.error?.message, 'error')
       },
     });
+  }
+  onBack() {
+    this.router.navigateByUrl("/auth/sign-in");
   }
 }

@@ -10,6 +10,7 @@ import configuration from './config/configuration';
 import { TenantsModule } from './tenant/tenant.module';
 import { TenantInterceptor } from './tenant/tenant.interceptor';
 import { UploadModule } from './upload/upload.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { UploadModule } from './upload/upload.module';
         keyPrefix: 'gym:', // Move keyPrefix outside config
       }),
     }),
+    MailModule,
     TenantsModule,
     UploadModule,
     AuthModule,

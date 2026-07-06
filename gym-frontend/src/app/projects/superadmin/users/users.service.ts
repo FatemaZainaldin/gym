@@ -1,48 +1,48 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { ApiService } from '@/app/core/services/api-service.service';
-import { AddClientForm } from './clients.model';
+import { AuthUser } from '@/app/core/services/auth.state';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientsService {
+export class UsersService {
 
   private http = inject(ApiService);
 
-  readonly API = `/superadmin/tenants`;
+  readonly API = `/users`;
 
-  createClient(body: AddClientForm): Observable<any> {
+  createUser(body: AuthUser): Observable<any> {
     return this.http
       .post(`${this.API}`, body);
 
   }
 
-  getAllClients(params?: any): Observable<any> {
+  getAllUsers(params?: any): Observable<any> {
     return this.http.get(`${this.API}`, { params });
   }
 
-  getClientById(id: string): Observable<any> {
+  getUserById(id: string): Observable<any> {
     return this.http.get(`${this.API}/${id}`);
   }
 
-  updateClient(id: string, body: Partial<AddClientForm>): Observable<any> {
+  updateUser(id: string, body: Partial<AuthUser>): Observable<any> {
     return this.http.patch(`${this.API}/${id}`, body);
   }
 
-  deleteClient(id: string): Observable<any> {
+  deleteUser(id: string): Observable<any> {
     return this.http.delete(`${this.API}/${id}`);
   }
 
-    deactivateClient(id: string): Observable<any> {
+    deactivateUser(id: string): Observable<any> {
     return this.http.patch(`${this.API}/${id}/suspend`,{});
   }
 
-  resendClientCredentials(id: string): Observable<any> {
+  resendUserCredentials(id: string): Observable<any> {
     return this.http.patch(`${this.API}/${id}/resend`,{});
   }
 
-    activateClient(id: string): Observable<any> {
+    activateUser(id: string): Observable<any> {
     return this.http.patch(`${this.API}/${id}/activate`,{});
   }
 

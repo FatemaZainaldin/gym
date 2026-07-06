@@ -1,24 +1,24 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { SmartTableComponent } from '@/app/shared/components/smart-table/smart-table.component';
-import { ColumnDef, defaultPaginationMeta, PaginationMeta, TableActionType, TableRequestEvent } from '@/app/shared/components/smart-table/smart-table.types';
-import { ClientsService } from '../clients.service';
-import { ToastService } from '@/app/core/toast/toast.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { AuthUser } from '@/app/core/services/auth.state';
+import { ToastService } from '@/app/core/toast/toast.service';
 import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogData, ConfirmDialogResult } from '@/app/shared/components/confirm-dialog/confirm-dialog.model.ts';
-import { AddClientForm } from '../clients.model';
+import { SmartTableComponent } from '@/app/shared/components/smart-table/smart-table.component';
+import { ColumnDef, defaultPaginationMeta, PaginationMeta, TableActionType, TableRequestEvent } from '@/app/shared/components/smart-table/smart-table.types';
+import { UsersService } from '../users.service';
 
 @Component({
-  selector: 'app-clients-list',
-  templateUrl: './clients-list.component.html',
+  selector: 'app-users-list',
+  templateUrl: './users-list.component.html',
   imports: [CommonModule, SmartTableComponent, MatIconModule],
 
 })
-export class ClientsListComponent implements OnInit {
+export class UsersListComponent implements OnInit {
 
-  private clientsService = inject(ClientsService);
+  private usersService = inject(UsersService);
   private toast = inject(ToastService);
   private dialog = inject(MatDialog);
 
@@ -32,34 +32,19 @@ export class ClientsListComponent implements OnInit {
         key: 'createdAt', label: 'Created At', sortable: true, filterable: false, hideColumn: false,
         filterType: 'date', dateFormat: 'short', nullPlaceholder: 'N/A'
       },
-      { key: 'name', label: 'Name', sortable: true, filterable: false },
-      { key: 'subdomain', label: 'Subdomain', sortable: true, filterable: false },
-
-      { key: 'adminEmail', label: 'Email', sortable: true, filterable: false },
+      { key: 'firstName', label: 'First Name', sortable: true, filterable: false },
+      { key: 'lastName', label: 'Last Name', sortable: true, filterable: false },
+      { key: 'email', label: 'Email', sortable: true, filterable: false },
+      {
+        key: 'role', label: 'Role', sortable: true, filterable: true, filterType: 'select', filterOptions: [
+          { label: 'Super Admin', value: 'super_admin' },
+          { label: 'Admin', value: 'admin' },
+          { label: 'Trainer', value: 'trainer' },
+          { label: 'Customer', value: 'customer' },
+        ]
+      },
       { key: 'phone', label: 'Phone', sortable: true, filterable: false },
-      {
-        key: 'country', label: 'country', sortable: true, filterable: true, filterType: 'select',
-        filterOptions: [
-          { label: 'Bahrain', value: 'Bahrain' },
-          { label: 'Saudi Arabia', value: 'Saudi Arabia' },
-          { label: 'United Arab Emirates', value: 'United Arab Emirates' },
-          { label: 'Kuwait', value: 'Kuwait' },
-          { label: 'Oman', value: 'Oman' },
-          { label: 'Qatar', value: 'Qatar' },
-        ]
-      },
-      {
-        key: 'plan', label: 'Plan', sortable: true, filterable: true, filterType: 'select',
-        filterOptions: [
-          { label: 'Free', value: 'free' },
-          { label: 'Starter', value: 'starter' },
-          { label: 'Pro', value: 'pro' },
-          { label: 'Enterprise', value: 'enterprise' },
-        ]
-      },
-      { key: 'trialEndsAt', label: 'Trial Ends At', sortable: true, filterable: false, filterType: 'dateRange' },
-      { key: 'suspendedAt', label: 'Suspended At', sortable: true, filterable: false, filterType: 'dateRange' },
-
+      { key: 'tenant.subdomain', label: 'Domain Name', sortable: true, filterable: true, filterType: 'text' },
       {
         key: 'status', label: 'Status', sortable: true, filterable: true, statusMap: true,
         filterType: 'select',
@@ -94,10 +79,10 @@ export class ClientsListComponent implements OnInit {
     ];
 
   ngOnInit() {
-    this.getClientsList()
+    this.getUsersList()
   }
 
-  getClientsList(event?: TableRequestEvent) {
+  getUsersList(event?: TableRequestEvent) {
 
     const { currentPage = defaultPaginationMeta.currentPage, pageSize = defaultPaginationMeta.pageSize,
       sortBy = 'createdAt', sortOrder = 'ASC', search, columnFilters } = event?.state || {};
@@ -109,7 +94,6 @@ export class ClientsListComponent implements OnInit {
         if (value === '' || value == null) {
           return [];
         }
-
         // This solution is designed for cases like trialEndAt, 
         // where an object such as { from: 1/1/2026, to: 1/2/2026 } is transformed into trialEndAtFrom and trialEndAtTo        
         if (
@@ -124,8 +108,8 @@ export class ClientsListComponent implements OnInit {
               nestedValue,
             ]);
         }
-
-        return [[key, value]];
+        const finalKey = key.split('.').pop();
+        return [[finalKey, value]];
       })
     );
     const finalParams = {
@@ -136,7 +120,7 @@ export class ClientsListComponent implements OnInit {
       ...cleanFilters,
       ...search && ({ search }),
     }
-    this.clientsService.getAllClients(finalParams).subscribe({
+    this.usersService.getAllUsers(finalParams).subscribe({
       next: (res) => {
         this.data.set(res?.data ?? []);
         this.paginationMeta.set(res.meta);
@@ -151,22 +135,22 @@ export class ClientsListComponent implements OnInit {
 
   }
 
-  onDelete(row: AddClientForm) {
+  onDelete(row: AuthUser) {
     this.openConfirm(
       {
         action: 'delete',
-        itemName: row.name,
+        itemName: row.firstName + ' ' + row.lastName,
         requireAcknowledge: true,
       },
       () => {
         const id = row?.id;
         if (!id) return;
         this.loading.set(true);
-        this.clientsService.deleteClient(id).subscribe({
+        this.usersService.deleteUser(id).subscribe({
           next: (res) => {
             this.loading.set(false);
             this.toast.showMessage(res?.message, 'success');
-            this.getClientsList();
+            this.getUsersList();
           },
           error: (err) => {
             this.toast.showMessage(err?.error?.message, 'error');
@@ -193,22 +177,22 @@ export class ClientsListComponent implements OnInit {
   }
 
 
-  onDeactivate(row: AddClientForm) {
+  onDeactivate(row: AuthUser) {
     this.openConfirm(
       {
         action: 'deactivate',
-        itemName: row.name,
+        itemName: row.firstName + ' ' + row.lastName,
         requireAcknowledge: true,
       },
       () => {
         const id = row?.id;
         if (!id) return;
         this.loading.set(true);
-        this.clientsService.deactivateClient(id).subscribe({
+        this.usersService.deactivateUser(id).subscribe({
           next: (res) => {
             this.loading.set(false);
             this.toast.showMessage(res?.message, 'success');
-            this.getClientsList();
+            this.getUsersList();
           },
           error: (err) => {
             this.toast.showMessage(err?.error?.message, 'error');
@@ -220,41 +204,41 @@ export class ClientsListComponent implements OnInit {
 
   }
 
-  
-  onResend(row: AddClientForm) {
+
+  onResend(row: AuthUser) {
     if (!row?.id) return;
     this.loading.set(true);
-     this.clientsService.resendClientCredentials(row?.id).subscribe({
-          next: (res) => {
-            this.loading.set(false);
-            this.toast.showMessage(res?.message, 'success');
-            this.getClientsList();
-          },
-          error: (err) => {
-            this.toast.showMessage(err?.error?.message, 'error');
-            this.loading.set(false);
-          }
-        });
+    this.usersService.resendUserCredentials(row?.id).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        this.toast.showMessage(res?.message, 'success');
+        this.getUsersList();
+      },
+      error: (err) => {
+        this.toast.showMessage(err?.error?.message, 'error');
+        this.loading.set(false);
+      }
+    });
   }
 
 
 
-  onActivate(row: AddClientForm) {
+  onActivate(row: AuthUser) {
     this.openConfirm(
       {
         action: 'activate',
-        itemName: row.name,
+        itemName: row.firstName + ' ' + row.lastName,
         requireAcknowledge: true,
       },
       () => {
         const id = row?.id;
         if (!id) return;
         this.loading.set(true);
-        this.clientsService.activateClient(id).subscribe({
+        this.usersService.activateUser(id).subscribe({
           next: (res) => {
             this.loading.set(false);
             this.toast.showMessage(res?.message, 'success');
-            this.getClientsList();
+            this.getUsersList();
           },
           error: (err) => {
             this.toast.showMessage(err?.error?.message, 'error');

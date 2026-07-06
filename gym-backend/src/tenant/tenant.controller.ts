@@ -78,7 +78,7 @@ export class TenantController {
             { ...result });
     }
 
-      @Patch(':id/activate')
+    @Patch(':id/activate')
     @HttpCode(HttpStatus.OK)
     async activate(@Param('id') id: string) {
         const result = await this.tenantService.activateTenant(id);
@@ -89,5 +89,18 @@ export class TenantController {
             },
             { ...result });
     }
+
+    @Patch(':id/resend')
+    @HttpCode(HttpStatus.OK)
+    async resendCredentials(@Param('id') id: string) {
+        const result = await this.tenantService.resendCredentials(id);
+        return success('TENANT_RESEND_WELCOME_EMAIL',
+                {
+                    en: 'Welcome email resent successfully.',
+                    ar: 'تم إعادة إرسال رسالة الترحيب بنجاح.',
+                },
+            { });
+    }
+
 
 }

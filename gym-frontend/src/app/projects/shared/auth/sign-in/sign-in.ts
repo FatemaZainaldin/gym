@@ -52,7 +52,9 @@ export default class AuthSignIn {
 
     this.authService.login(this.signInFormModel()).subscribe({
       next: async (res) => {
-        this.toast.showMessage(res.message, 'success')
+        if (!res) return;
+
+        // this.toast.showMessage(res?.message, 'success')
         await this.authService.redirectByRole();
       },
 

@@ -5,11 +5,11 @@ import { Tenant } from "./tenant.entity";
 export abstract class TenantBaseEntity extends BaseEntity {
 
     @Index()
-    @Column({  type: 'uuid', nullable: true })
+    @Column({ type: 'uuid', nullable: true })
     tenantId: string;
 
-    @ManyToOne(() => Tenant, { lazy: true, onDelete: 'CASCADE' })
+    @ManyToOne(() => Tenant, { eager: true, onDelete: 'CASCADE' })
     @JoinColumn()
-    tenant?: Promise<Tenant>;
+    tenant?: Tenant;
 
 }

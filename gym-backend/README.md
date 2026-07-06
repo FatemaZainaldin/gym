@@ -96,3 +96,18 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# generate — pass the full path + name at the end
+npm run migration:generate src/migrations/AddMustChangePassword
+
+# run
+npm run migration:run
+
+# revert last
+npm run migration:revert
+
+# see what ran and what didn't
+npm run migration:show
+
+# create empty (for manual migrations)
+npm run migration:create src/migrations/SyncTenantSchema

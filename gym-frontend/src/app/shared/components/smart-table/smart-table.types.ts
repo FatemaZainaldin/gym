@@ -1,5 +1,5 @@
 export type SortDirection = 'ASC' | 'DESC' | '';
-export type TableActionType = 'edit' | 'delete' | 'copy' | 'activate' | 'deactivate';
+export type TableActionType = 'edit' | 'delete' | 'copy' | 'activate' | 'deactivate' | 'resend';
 
 export interface ColumnDef<T = any> {
   key: string;              // maps to property in data

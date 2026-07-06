@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { Observable, tap, switchMap, map } from "rxjs";
+import { Observable, tap, switchMap, map, of } from "rxjs";
 import { ApiService } from "@/app/core/services/api-service.service";
 import { AuthState, AuthUser, NavItem } from "../../../core/services/auth.state";
 
@@ -15,6 +15,7 @@ interface ApiResponse<T = void> {
 interface TokenData {
   accessToken: string;
   accessExpires: number;
+  mustChangePassword?: boolean
 }
 
 @Injectable({ providedIn: 'root' })
@@ -26,7 +27,7 @@ export class AuthService {
   readonly API = `/auth`;
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
-  login(body: { email: string; password: string }): Observable<ApiResponse<AuthUser>> {
+  login(body: { email: string; password: string }): Observable<ApiResponse<AuthUser> | null> {
     return this.http
       .post<ApiResponse<TokenData>>(`${this.API}/login`, body, { withCredentials: true })
       .pipe(
@@ -34,7 +35,13 @@ export class AuthService {
           const { accessToken, accessExpires } = res.data!;
           this.state.setToken(accessToken, accessExpires);
         }),
-        switchMap(() => this.loadMe()),
+        switchMap(res => {
+          if (res.data?.mustChangePassword) {
+            this.router.navigate(['/auth/reset-password']);
+            return of(null);
+          }
+          return this.loadMe();
+        }),
       );
   }
 
@@ -70,9 +77,9 @@ export class AuthService {
   }
 
   // ── RESET PASSWORD ─────────────────────────────────────────────────────────
-  resetPassword(body: { password: string }): Observable<ApiResponse> {
+  resetPassword(body: { password: string, token: string | null }): Observable<ApiResponse> {
     return this.http
-      .post<ApiResponse>(`${this.API}/reset-password`, body);
+      .post<ApiResponse>(`${this.API}/reset-password`, body, { withCredentials: true });
   }
 
   // ── REFRESH ────────────────────────────────────────────────────────────────
@@ -104,10 +111,10 @@ export class AuthService {
     if (!user) { this.router.navigate(['/auth/sign-in']); return; }
 
     // Find the module marked as isDefault
-    const defaultModule = user.modules?.find((m: NavItem) => m.isDefault);
+    const link = user.modules?.flatMap(m => m.children ?? [])?.find(c => c.isDefault)?.link;
 
-    if (defaultModule?.link) {
-      this.router.navigate([defaultModule.link]);
+    if (link) {
+      this.router.navigate([link]);
       return;
     }
 

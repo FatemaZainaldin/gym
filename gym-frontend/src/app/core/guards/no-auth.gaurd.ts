@@ -14,9 +14,10 @@ export const noAuthGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
     if (returnUrl) {
       router.navigateByUrl(returnUrl);
     } else {
-      const module = authState?.user()?.modules?.find(m => m.isDefault);
-      if (module?.link) {
-        router.navigateByUrl(module.link);
+      const link = authState?.user()?.modules?.flatMap(m => m.children ?? [])?.find(c => c.isDefault)?.link;
+
+      if (link) {
+        router.navigateByUrl(link);
       }
     }
     return false;

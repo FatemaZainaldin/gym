@@ -6,7 +6,7 @@ import { TenantBaseEntity } from '../../tenant/entities/tenant-base.entity';
 import { Role } from '../enums/role.enum';
 
 export enum UserStatus {
- ACTIVE = 'active',
+  ACTIVE = 'active',
   INACTIVE = 'inactive',
   SUSPENDED = 'suspended',
   ON_LEAVE = 'on_leave'
@@ -14,39 +14,39 @@ export enum UserStatus {
 
 @Entity('users')
 export class User extends TenantBaseEntity {
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   firstName: string;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   lastName: string;
 
-  @Column({ length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   email: string;
 
-  @Column({ length: 255 })
-  @Exclude()            // never serialised to JSON response
+  @Column({ type: 'varchar', length: 255 })
+  @Exclude()
   password: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.MEMBER })
+  @Column({ type: 'enum', enum: Role, default: Role.MEMBER, enumName: 'user_role_enum' })
   role: Role;
 
-
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE })
+  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE, enumName: 'user_status_enum' })
   status: UserStatus;
 
-  @Column({ nullable: true, length: 500 })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   avatar?: string;
 
-  @Column({ nullable: true, length: 20 })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   phone?: string;
 
-  // The refresh token hash stored server-side for rotation verification
-  @Column({ nullable: true })
+  @Column({ type: 'boolean', default: false })
+  mustChangePassword: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
   @Exclude()
   refreshTokenHash?: string;
 
-  // For forgot-password flow
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   @Exclude()
   resetToken?: string;
 
