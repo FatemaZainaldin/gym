@@ -6,6 +6,7 @@ export enum TenantStatus {
   TRIAL     = 'trial',
   SUSPENDED = 'suspended',
   INACTIVE  = 'inactive',
+  PENDING   = 'pending',
 }
 
 export enum SubscriptionPlan {

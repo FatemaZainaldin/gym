@@ -1,0 +1,20 @@
+<div class="flex flex-col flex-auto min-w-0">
+  <div
+    class="flex flex-col sm:flex-row flex-0 sm:items-center sm:justify-between p-4 sm:py-8 sm:px-10 border-b bg-card dark:bg-transparent">
+    <div class="flex items-center gap-4">
+      <button mat-icon-button (click)="home()">
+        <mat-icon svgIcon="arrow-left"></mat-icon>
+      </button>
+      <div>
+        <div class="text-4xl font-extrabold tracking-tight leading-none">User Details</div>
+        <div class="ml-0.5 font-medium text-secondary">View user information</div>
+      </div>
+    </div>
+  </div>
+  <div class="p-6">
+    @if(data())
+    {
+    <app-confirm-step [data]="$any(data)"></app-confirm-step>
+    }
+  </div>
+</div>

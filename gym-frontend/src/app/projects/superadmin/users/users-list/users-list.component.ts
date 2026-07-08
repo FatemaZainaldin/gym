@@ -59,8 +59,10 @@ export class UsersListComponent implements OnInit {
         key: 'actions', label: 'Actions', width: '220px', align: 'center',
         actions: ['edit', 'copy', 'delete', 'resend', 'activate', 'deactivate'],
         actionCondition: (row) => {
-          const actions: TableActionType[] = ['edit', 'copy', 'delete'];
-
+          const actions: TableActionType[] = [ 'copy', 'delete'];
+          if (!['pending'].includes(row.status)) {
+            actions.push('edit');
+          }
           if (['suspended', 'inactive'].includes(row.status)) {
             actions.push('activate');
           }

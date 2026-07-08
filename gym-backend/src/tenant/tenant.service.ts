@@ -6,10 +6,10 @@ import { CreateTenantDTO } from "./dto/create-tenant.dto";
 import { TenantFilterDTO } from "./dto/tenant-filter.dto";
 import { UpdateTenantDTO } from "./dto/update-tenant-dto";
 import { randomBytes } from "crypto";
-import * as bcrypt from 'bcrypt';
 import { MailService } from "src/mail/mail.service";
 import { UsersService } from "src/users/users.service";
 import { Role } from "src/users/enums/role.enum";
+import { UserStatus } from "src/users/entities/user.entity";
 
 @Injectable()
 export class TenantService {
@@ -36,33 +36,25 @@ export class TenantService {
         const saved = await this.tenantRepository.save(tenant);
 
         const tempPassword = randomBytes(6).toString('base64url');
-
         await this.userService.createUser({
             email: createTenantDTO.adminEmail,
             firstName: createTenantDTO.name,
             lastName: createTenantDTO.subdomain,
             password: tempPassword,
             tenantId: saved.id,
+            tenant: saved,
             role: Role.ADMIN,
             phone: createTenantDTO.phone,
             mustChangePassword: true,
+            status: UserStatus.PENDING
         });
-
-        if (createTenantDTO.adminEmail) {
-            await this.mailService.sendTenantWelcome({
-                email: createTenantDTO.adminEmail,
-                name: createTenantDTO.name,
-                tempPassword,
-                loginUrl: `${process.env.APP_URL}/auth/login`,
-            });
-        }
 
         return saved;
     }
 
     async resendCredentials(tenantId: string) {
-        const tenant = await this.findTenantById(tenantId);
-        const user = await this.userService.findById({tenantId});
+        const tenant = await this.findTenantById({id:tenantId});
+        const user = await this.userService.findById({ tenantId });
         const tempPassword = randomBytes(6).toString('base64url');
 
         if (!user) {
@@ -83,43 +75,42 @@ export class TenantService {
             });
         }
 
-        return this.findTenantById(tenantId);
+        return this.findTenantById({id:tenantId});
 
     }
-
-
-    async findTenantById(id: string) {
-        const tenant = await this.tenantRepository.findOne({ where: { id } });
-        if (!tenant) throw new NotFoundException(`Tenant #${id} not found`);
+  
+      async findTenantById(filters: Partial<Pick<Tenant, 'id' | 'subdomain' >>) {
+        const tenant = await this.tenantRepository.findOne({ where: filters });
+         if (!tenant) throw new NotFoundException(`Tenant not found`);
         return tenant;
-    }
+      }
 
     async updateTenant(id: string, updateTenantDTO: UpdateTenantDTO) {
-        await this.findTenantById(id);
+        await this.findTenantById({id:id});
         await this.tenantRepository.update(id, updateTenantDTO);
-        return this.findTenantById(id);
+        return this.findTenantById({id:id});
     }
 
     async suspendTenant(id: string) {
-        await this.findTenantById(id);
+        await this.findTenantById({id:id});
         await this.tenantRepository.update(id, {
             status: TenantStatus.SUSPENDED,
             suspendedAt: new Date()
         });
-        return this.findTenantById(id);
+        return this.findTenantById({id:id});
     }
 
     async activateTenant(id: string) {
-        await this.findTenantById(id);
+        await this.findTenantById({id:id});
         await this.tenantRepository.update(id, {
             status: TenantStatus.TRIAL,
             activatedAt: new Date()
         });
-        return this.findTenantById(id);
+        return this.findTenantById({id:id});
     }
 
     async deleteTenant(id: string) {
-        await this.findTenantById(id);
+        await this.findTenantById({id:id});
         return this.tenantRepository.softDelete(id);
     }
 

@@ -21,7 +21,8 @@ export class StorageService {
     const filepath = join(this.uploadDir, filename);
 
     writeFileSync(filepath, file.buffer);
-    const baseUrl = process.env.APP_URL ?? 'http://localhost:3000';
+    const baseUrl = 'http://localhost:3000';
+    // const baseUrl = process.env.APP_URL ;
     return `${baseUrl}/uploads/${filename}`;
   }
 }

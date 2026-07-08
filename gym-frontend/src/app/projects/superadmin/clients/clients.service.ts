@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { ApiService } from '@/app/core/services/api-service.service';
-import { AddClientForm } from './clients.model';
+import { Tenant } from './clients.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class ClientsService {
 
   readonly API = `/superadmin/tenants`;
 
-  createClient(body: AddClientForm): Observable<any> {
+  createClient(body: Tenant): Observable<any> {
     return this.http
       .post(`${this.API}`, body);
 
@@ -26,7 +26,7 @@ export class ClientsService {
     return this.http.get(`${this.API}/${id}`);
   }
 
-  updateClient(id: string, body: Partial<AddClientForm>): Observable<any> {
+  updateClient(id: string, body: Partial<Tenant>): Observable<any> {
     return this.http.patch(`${this.API}/${id}`, body);
   }
 

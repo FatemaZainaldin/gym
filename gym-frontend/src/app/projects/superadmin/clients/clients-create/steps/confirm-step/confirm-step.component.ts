@@ -11,6 +11,7 @@ interface ClientPersonalSummary {
   country?: string;
   timezone?: string;
   adminEmail?: string;
+  logoUrl?:string;
 }
 
 interface ClientSubscriptionSummary {

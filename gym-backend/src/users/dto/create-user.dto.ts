@@ -3,6 +3,9 @@ import { Role } from "../enums/role.enum";
 import { UserStatus } from "../entities/user.entity";
 
 export class CreateUserDTO {
+    @IsString()
+    @IsNotEmpty()
+    tenantId: string;
 
     @IsString()
     @IsNotEmpty()
@@ -18,7 +21,7 @@ export class CreateUserDTO {
     email: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     password: string;
 
 
@@ -26,7 +29,7 @@ export class CreateUserDTO {
     @IsNotEmpty()
     phone: string;
 
-    
+
     @IsString()
     @IsOptional()
     avatar?: string;

@@ -10,6 +10,7 @@ import {
   Get,
   UseGuards,
   UnauthorizedException,
+  Param,
 } from "@nestjs/common";
 import type { Response, Request } from 'express';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';

@@ -9,11 +9,11 @@ import { CreateTenantDTO } from './dto/create-tenant.dto';
 import { UpdateTenantDTO } from './dto/update-tenant-dto';
 import { TenantFilterDTO } from './dto/tenant-filter.dto';
 import { TenantStatus } from './entities/tenant.entity';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('superadmin/tenants')
 @UseGuards(RolesGuard)
 @Roles(Role.SUPER_ADMIN)
-
 export class TenantController {
     constructor(private readonly tenantService: TenantService) { }
 
@@ -55,7 +55,7 @@ export class TenantController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     async findOne(@Param('id') id: string) {
-        const tenant = await this.tenantService.findTenantById(id);
+        const tenant = await this.tenantService.findTenantById({id:id});
         return success('TENANTS_FETCHED', { en: 'Tenant fetched.', ar: 'تم جلب المدرب.' }, tenant);
     }
 
@@ -101,6 +101,21 @@ export class TenantController {
                 },
             { });
     }
+
+  @Get('tenant-info')
+  @Public()
+  async getTenantInfo(@Param() subdomain:string) {
+    const data = await this.tenantService.findTenantById({subdomain:subdomain});
+
+    return success(
+      'TENANT_FETCH',
+      {
+        en: 'Tenant info loaded.',
+        ar: 'تم تحميل الملف الشخصي.',
+      },
+      data,
+    );
+  }
 
 
 }

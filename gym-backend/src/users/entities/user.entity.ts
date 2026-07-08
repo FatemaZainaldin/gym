@@ -9,7 +9,8 @@ export enum UserStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
   SUSPENDED = 'suspended',
-  ON_LEAVE = 'on_leave'
+  ON_LEAVE = 'on_leave',
+  PENDING =  'pending'
 }
 
 @Entity('users')

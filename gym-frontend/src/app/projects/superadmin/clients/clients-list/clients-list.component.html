@@ -1,3 +1,4 @@
 <app-smart-table [columns]="columns" [data]="data()" [paginationMeta]="paginationMeta()" [loading]="loading()"
-  (stateChange)="getClientsList($event)" (onDelete)="onDelete($event)" (onDeactivate)="onDeactivate($event)" (onActivate)="onActivate($event)"
-   (onResend)="onResend($event)" [globalSearchPlaceholder]="'Search by Name ,Subdomain,phone and Email'" />
+  (stateChange)="getClientsList($event)" (onDelete)="onDelete($event)" (onDeactivate)="onDeactivate($event)"
+  (onActivate)="onActivate($event)" (onResend)="onResend($event)"
+  [globalSearchPlaceholder]="'Search by Name ,Subdomain,phone and Email'" />

@@ -8,7 +8,7 @@ import { ToastService } from '@/app/core/toast/toast.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '@/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogData, ConfirmDialogResult } from '@/app/shared/components/confirm-dialog/confirm-dialog.model.ts';
-import { AddClientForm } from '../clients.model';
+import { Tenant } from '../clients.model';
 
 @Component({
   selector: 'app-clients-list',
@@ -151,7 +151,7 @@ export class ClientsListComponent implements OnInit {
 
   }
 
-  onDelete(row: AddClientForm) {
+  onDelete(row: Tenant) {
     this.openConfirm(
       {
         action: 'delete',
@@ -193,7 +193,7 @@ export class ClientsListComponent implements OnInit {
   }
 
 
-  onDeactivate(row: AddClientForm) {
+  onDeactivate(row: Tenant) {
     this.openConfirm(
       {
         action: 'deactivate',
@@ -221,7 +221,7 @@ export class ClientsListComponent implements OnInit {
   }
 
   
-  onResend(row: AddClientForm) {
+  onResend(row: Tenant) {
     if (!row?.id) return;
     this.loading.set(true);
      this.clientsService.resendClientCredentials(row?.id).subscribe({
@@ -239,7 +239,7 @@ export class ClientsListComponent implements OnInit {
 
 
 
-  onActivate(row: AddClientForm) {
+  onActivate(row: Tenant) {
     this.openConfirm(
       {
         action: 'activate',

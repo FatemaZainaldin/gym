@@ -1,6 +1,6 @@
 
 
-export interface AddClientForm {
+export interface Tenant {
     name: string;
     subdomain: string;
     country?: string;

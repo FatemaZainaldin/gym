@@ -1,0 +1,98 @@
+<div class="bg-gray-50 overflow-hidden" [formGroup]="formGroup">
+  <div class="flex items-center gap-3 px-6 py-4 border-b">
+    <mat-icon class="text-primary icon-size-5" svgIcon="user" />
+    <span class="text-lg font-semibold tracking-tight">Details</span>
+  </div>
+
+  <div class="p-6">
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" placeholder="First Name" />
+          <mat-error>
+            <form-error [control]="formGroup.get('firstName')" field="First Name"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" placeholder="Last Name" />
+          <mat-error>
+            <form-error [control]="formGroup.get('lastName')" field="Last Name"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+
+      @if(formGroup.get('subdomain')?.value)
+      {
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Subdomain</mat-label>
+          <input matInput formControlName="subdomain" placeholder="Subdomain" />
+          <mat-error>
+            <form-error [control]="formGroup.get('subdomain')" field="Subdomain"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      }
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Phone</mat-label>
+          <span matTextPrefix>+973&nbsp;</span>
+          <input matInput formControlName="phone" placeholder="Phone" />
+          <mat-error>
+            <form-error [control]="formGroup.get('phone')" field="Phone"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Email" />
+          <mat-error>
+            <form-error [control]="formGroup.get('email')" field="Email"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role" placeholder="Role">
+            <mat-option value="">Please select</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+            <mat-option value="trainer">Trainer</mat-option>
+            <mat-option value="member">Member</mat-option>
+          </mat-select>
+          <mat-error>
+            <form-error [control]="formGroup.get('role')" field="Role"></form-error>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="sm:col-span-2">
+        <mat-label class="mb-4">Avatar*</mat-label>
+        <div class="relative overflow-hidden w-full z-50">
+          <app-file-upload formControlName="avatar" accept="image/*" [maxSizeMb]="2" uploadUrl="/upload" />
+          <mat-error>
+            <form-error [control]="formGroup.get('avatar')" field="Avatar"></form-error>
+          </mat-error>
+        </div>
+      </div>
+
+
+
+
+
+    </div>
+  </div>
+</div>

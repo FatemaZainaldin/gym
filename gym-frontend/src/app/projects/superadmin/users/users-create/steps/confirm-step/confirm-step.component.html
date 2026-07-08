@@ -1,0 +1,64 @@
+<div class="bg-gray-50 p-6 space-y-6">
+
+
+  <!-- Detail rows -->
+  <div class="border-t border-gray-100 pt-5 flex flex-col gap-3">
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="id-card" class="!text-base !w-4 !h-4" />
+        Name
+      </div>
+      <span class="text-sm font-medium text-gray-800">{{ (user.firstName || user.lastName) ? (user.firstName + ' ' +
+        user.lastName) : '—' }}</span>
+    </div>
+    @if(user.subdomain)
+    {
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="mail-check" class="!text-base !w-4 !h-4" />
+        Domain Name
+      </div>
+      <span class="text-sm font-medium text-gray-800">{{ user.subdomain || '—' }}</span>
+    </div>
+  }
+
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="mail-check" class="!text-base !w-4 !h-4" />
+        Email
+      </div>
+      <span class="text-sm font-medium text-gray-800">{{ user.email || '—' }}</span>
+    </div>
+
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="phone" class="!text-base !w-4 !h-4" />
+        Phone
+      </div>
+      <span class="text-sm font-medium text-gray-800">{{ user.phone || '—' }}</span>
+    </div>
+
+
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="user-round-cog" class="!text-base !w-4 !h-4" />
+        Role
+      </div>
+      <span class="text-sm font-medium text-gray-800">{{ user.role || '—' }}</span>
+    </div>
+
+
+
+    <div class="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-100">
+      <div class="flex items-center gap-2.5 text-gray-500 text-sm">
+        <mat-icon svgIcon="circle-check" class="!text-base !w-4 !h-4" />
+        Status
+      </div>
+      <span class="text-xs font-medium px-3 py-1 rounded-full bg-amber-50 text-amber-700">
+        {{ user.status || 'Pending' }}
+      </span>
+    </div>
+
+  </div>
+
+</div>

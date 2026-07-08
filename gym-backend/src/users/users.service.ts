@@ -1,19 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User, UserStatus } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserFilterDTO } from './dto/user-filter.dto';
+import { randomBytes } from 'crypto';
+import { MailService } from 'src/mail/mail.service';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { TenantStatus } from 'src/tenant/entities/tenant.entity';
+import { CurrentUser } from 'src/common/decorators/public.decorator';
+import { Role } from './enums/role.enum';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private mailService: MailService
   ) { }
 
 
-  async findAllUsers(filters: UserFilterDTO) {
+  async findAllUsers(filters: UserFilterDTO, user: User) {
     const {
       currentPage = 1,
       pageSize = 10,
@@ -46,6 +53,11 @@ export class UsersService {
           'tenant.subdomain',
         ]);
 
+    if (user?.role !== Role.SUPER_ADMIN) {
+      query.where('tenant.id = :tenantId', {
+        tenantId: user?.tenantId,
+      });
+    }
     if (search) {
       query.andWhere(
         `(user.firstName ILIKE :search
@@ -100,21 +112,34 @@ export class UsersService {
     return this.usersRepository.findOne({ where: filters });
   }
 
-  async createUser(userData: Partial<User>) {
+  async createUser(userData: Partial<User>, currentUser?: User) {
+    const userExists = await this.usersRepository.findOne({ where: { email: userData.email } });
+    if (userExists) throw new ConflictException('Email already registered');
 
-    const hashedPassword =
-      await bcrypt.hash(
-        userData.password!,
-        10,
-      );
+    const tempPassword = randomBytes(6).toString('base64url');
 
     const user = this.usersRepository.create(
       {
+        tenantId: userData.tenantId ?? currentUser?.tenantId,
         ...userData,
-        password: hashedPassword,
+        mustChangePassword: true,
+        password: tempPassword,
+        status: UserStatus.PENDING
       }
     );
-    return this.usersRepository.save(user);
+
+    const saved = await this.usersRepository.save(user);
+console.log(saved)
+    if (userData.email) {
+      await this.mailService.sendTenantWelcome({
+        email: user?.email,
+        name: user?.firstName ?? '',
+        tempPassword,
+        loginUrl: `${process.env.APP_URL}/auth/login?domain=${userData?.tenant?.subdomain}`,
+      });
+    }
+
+    return saved;
   }
 
   async updateUser(id: string, userData: Partial<User>) {

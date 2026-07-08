@@ -107,7 +107,7 @@ async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshTok
     throw new UnauthorizedException('Invalid credentials');
   }
 
-  if (user.status !== UserStatus.ACTIVE) {
+  if (user.status == UserStatus.INACTIVE) {
     throw new ForbiddenException('Account is not active');
   }
 
@@ -238,6 +238,7 @@ async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshTok
   await this.userRepo.update(payload.sub, {
     password:           hashed,
     mustChangePassword: false,
+    status : UserStatus.ACTIVE,
   });
   
 }
