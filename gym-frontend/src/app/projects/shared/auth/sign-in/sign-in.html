@@ -4,7 +4,9 @@
   <div class="flex items-center justify-center bg-white p-8 dark:bg-neutral-950 w-2/5 flex-shrink-0">
     <div class="flex w-full max-w-sm flex-col">
 <div class=" justify-center ietms-center flex w-full ">
-        <img class="w-35" src="/assets/logo.png" alt="FitPro logo"/>
+        <!-- <img class="w-35" src="/assets/logo.png" alt="FitPro logo"/> -->
+                <img class="w-35" [src]="state.tenant()?.logoUrl" alt="FitPro logo"/>
+
 </div>
 
       <div class="mt-8 mb-4 text-4xl font-semibold ">

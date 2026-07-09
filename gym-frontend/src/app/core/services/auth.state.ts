@@ -1,5 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { StorageService } from './storage.service';
+import { User } from '@/app/projects/superadmin/users/users.model';
+import { Tenant } from '@/app/projects/superadmin/clients/clients.model';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -36,6 +38,7 @@ const KEYS = {
   USER: 'session_user',
   TOKEN: 'session_token',
   EXPIRES: 'session_expires',
+  TENANT: 'tenant_user',
 } as const;
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -47,9 +50,11 @@ export class AuthState {
   private readonly _user = signal<AuthUser | null>(null);
   private readonly _token = signal<string | null>(null);
   private readonly _expires = signal<number | null>(null);
+  private readonly _tenant = signal<Tenant | null>(null);
 
   // ── Public read-only signals ─────────────────────────────────────────────
   readonly user = this._user.asReadonly();
+  readonly tenant = this._tenant.asReadonly();
   readonly token = this._token.asReadonly();
   readonly isLoggedIn = computed(() => !!this._user());
   readonly role = computed(() => this._user()?.role ?? null);
@@ -80,10 +85,15 @@ export class AuthState {
   // ── Setters ──────────────────────────────────────────────────────────────
 
   setUser(user: AuthUser): void {
-    /* eslint-disable no-debugger */
     this._user.set(user);
     this.storage.setItem(KEYS.USER, JSON.stringify(user));
   }
+
+  setTenant(tenant: Tenant): void {
+    this._tenant.set(tenant);
+    this.storage.setItem(KEYS.TENANT, JSON.stringify(tenant));
+  }
+
 
   setToken(token: string, expires: number): void {
     this._token.set(token);

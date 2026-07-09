@@ -14,6 +14,7 @@ import { MatInputModule } from "@angular/material/input";
 import { RouterLink } from "@angular/router";
 import { ToastService } from "@/app/core/toast/toast.service";
 import { AuthService } from "../auth.service";
+import { AuthState } from "@/app/core/services/auth.state";
 
 @Component({
   selector: "auth-sign-in",
@@ -34,6 +35,7 @@ export default class AuthSignIn {
   // Dependencies
   private toast = inject(ToastService);
   private authService = inject(AuthService);
+   state = inject(AuthState);
 
   // State
   protected signInFormModel = signal({
@@ -50,7 +52,7 @@ export default class AuthSignIn {
   signIn(event: Event) {
     event.preventDefault();
 
-    this.authService.login(this.signInFormModel()).subscribe({
+    this.authService.login({...this.signInFormModel(),subdomain : this.state?.tenant()?.subdomain ?? 'badan'}).subscribe({
       next: async (res) => {
         if (!res) return;
 

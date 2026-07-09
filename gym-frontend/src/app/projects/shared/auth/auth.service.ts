@@ -3,6 +3,8 @@ import { Router } from "@angular/router";
 import { Observable, tap, switchMap, map, of } from "rxjs";
 import { ApiService } from "@/app/core/services/api-service.service";
 import { AuthState, AuthUser, NavItem } from "../../../core/services/auth.state";
+import { User } from "../../superadmin/users/users.model";
+import { Tenant } from "../../superadmin/clients/clients.model";
 
 // ── API response wrapper ───────────────────────────────────────────────────
 interface ApiResponse<T = void> {
@@ -27,7 +29,7 @@ export class AuthService {
   readonly API = `/auth`;
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
-  login(body: { email: string; password: string }): Observable<ApiResponse<AuthUser> | null> {
+  login(body: { email: string; password: string ,subdomain:string }): Observable<ApiResponse<AuthUser> | null> {
     return this.http
       .post<ApiResponse<TokenData>>(`${this.API}/login`, body, { withCredentials: true })
       .pipe(
@@ -60,6 +62,21 @@ export class AuthService {
             this.state.setUser({ ...data, modules });
 
           }
+        }),
+      );
+  }
+
+  // ── LOAD ME ────────────────────────────────────────────────────────────────
+  loadTenant(domain: string): Observable<ApiResponse<Tenant>> {
+    return this.http
+      .get<ApiResponse<Tenant>>(`${this.API}/tenant-info/${domain}`, { withCredentials: true })
+      .pipe(
+        tap((response) => {
+          if (response?.data) {
+
+            this.state.setTenant(response?.data);
+          }
+
         }),
       );
   }

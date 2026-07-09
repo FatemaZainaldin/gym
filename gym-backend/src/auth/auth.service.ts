@@ -16,6 +16,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { NavItem } from 'src/navigation/entities/navItem.entity';
 import { Role } from 'src/users/enums/role.enum';
+import { TenantService } from 'src/tenant/tenant.service';
 
 export class LoginResponse {
   id: string;
@@ -59,6 +60,7 @@ export class AuthService {
     @InjectRepository(NavItem)
     private readonly navItemRepo: Repository<NavItem>,
     private readonly jwtService: JwtService,
+    private readonly tenantService : TenantService,
     private readonly config: ConfigService,
     @InjectRedis() private readonly redis: Redis,
   ) {
@@ -92,8 +94,11 @@ export class AuthService {
   }
 
 async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshToken: string, mustChangePassword?: boolean }> {
+  const tenant = await this.tenantService.findTenantById({subdomain:dto.subdomain});
+
+
   const user = await this.userRepo.findOne({
-    where: { email: dto.email.toLowerCase().trim() }
+    where: { email: dto.email.toLowerCase().trim() , tenantId : tenant.id }
   });
 
   let validPassword = false;
@@ -308,6 +313,11 @@ async login(dto: LoginDto, ipAddress: string): Promise<AuthTokens & { refreshTok
       ...userWithoutPassword,
       ...(modules.length > 0 && { modules })
     };
+  }
+
+  async findTenantById(filter:any)
+  {
+    return this.tenantService.findTenantById(filter);
   }
 
   // ── PRIVATE: Issue Token Pair ────────────────────────────────────────────

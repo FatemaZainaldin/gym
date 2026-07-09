@@ -15,27 +15,27 @@ import {
 import type { Response, Request } from 'express';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { CurrentUser } from "src/common/decorators/current-user.decorator";
-import { Public }      from "src/common/decorators/public.decorator";
-import { User }        from "src/users/entities/user.entity";
+import { Public } from "src/common/decorators/public.decorator";
+import { User } from "src/users/entities/user.entity";
 import { AuthService } from "./auth.service";
-import { LoginDto }    from "./dto/login.dto";
-import { ResetPasswordDto }  from "./dto/reset-password.dto";
+import { LoginDto } from "./dto/login.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { ForgotPasswordDTO } from "./dto/forgot-password.dto";
-import { RegisterDto }       from "./dto/register.dto";
-import { success }           from "src/common/helpers/response.helper";
+import { RegisterDto } from "./dto/register.dto";
+import { success } from "src/common/helpers/response.helper";
 
-const COOKIE_NAME    = 'refresh_token';
+const COOKIE_NAME = 'refresh_token';
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure:   process.env.NODE_ENV === 'production',
+  secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict' as const,
-  maxAge:   2 * 60 * 1000,
-  path:     '/auth/refresh',
+  maxAge: 2 * 60 * 1000,
+  path: '/auth/refresh',
 };
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   // ── REGISTER ─────────────────────────────────────────────────────────────
   @Public()
@@ -119,7 +119,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @CurrentUser() user: User,
   ) {
-    const accessToken  = req.headers.authorization?.split(' ')[1] ?? '';
+    const accessToken = req.headers.authorization?.split(' ')[1] ?? '';
     const refreshToken = req.cookies?.[COOKIE_NAME];
 
     await this.authService.logout(user.id, accessToken, refreshToken);
@@ -184,4 +184,21 @@ export class AuthController {
       data,
     );
   }
+
+
+  @Get('tenant-info/:domain')
+  @Public()
+  async getTenantInfo(@Param('domain') domain: string) {
+    const data = await this.authService.findTenantById({ subdomain: domain });
+
+    return success(
+      'TENANT_FETCH',
+      {
+        en: 'Tenant info loaded.',
+        ar: 'تم تحميل الملف الشخصي.',
+      },
+      data,
+    );
+  }
+
 }

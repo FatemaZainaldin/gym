@@ -55,18 +55,18 @@ export class TenantController {
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     async findOne(@Param('id') id: string) {
-        const tenant = await this.tenantService.findTenantById({id:id});
+        const tenant = await this.tenantService.findTenantById({ id: id });
         return success('TENANTS_FETCHED', { en: 'Tenant fetched.', ar: 'تم جلب المدرب.' }, tenant);
     }
 
     @Get('')
     @HttpCode(HttpStatus.OK)
-    async findAll(@Query() tenantFilterDto : TenantFilterDTO) {
-        const {data, meta } = await this.tenantService.findAllTenants(tenantFilterDto);
-        return success('ALL_TENANT_FETCHED', { en: 'All tenant fetched.', ar: 'تم جلب المدربين.' },data, meta);
+    async findAll(@Query() tenantFilterDto: TenantFilterDTO) {
+        const { data, meta } = await this.tenantService.findAllTenants(tenantFilterDto);
+        return success('ALL_TENANT_FETCHED', { en: 'All tenant fetched.', ar: 'تم جلب المدربين.' }, data, meta);
     }
 
-     @Patch(':id/suspend')
+    @Patch(':id/suspend')
     @HttpCode(HttpStatus.OK)
     async suspend(@Param('id') id: string) {
         const result = await this.tenantService.suspendTenant(id);
@@ -95,27 +95,13 @@ export class TenantController {
     async resendCredentials(@Param('id') id: string) {
         const result = await this.tenantService.resendCredentials(id);
         return success('TENANT_RESEND_WELCOME_EMAIL',
-                {
-                    en: 'Welcome email resent successfully.',
-                    ar: 'تم إعادة إرسال رسالة الترحيب بنجاح.',
-                },
-            { });
+            {
+                en: 'Welcome email resent successfully.',
+                ar: 'تم إعادة إرسال رسالة الترحيب بنجاح.',
+            },
+            {});
     }
 
-  @Get('tenant-info')
-  @Public()
-  async getTenantInfo(@Param() subdomain:string) {
-    const data = await this.tenantService.findTenantById({subdomain:subdomain});
-
-    return success(
-      'TENANT_FETCH',
-      {
-        en: 'Tenant info loaded.',
-        ar: 'تم تحميل الملف الشخصي.',
-      },
-      data,
-    );
-  }
 
 
 }

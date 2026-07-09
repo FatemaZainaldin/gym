@@ -129,7 +129,6 @@ export class UsersService {
     );
 
     const saved = await this.usersRepository.save(user);
-console.log(saved)
     if (userData.email) {
       await this.mailService.sendTenantWelcome({
         email: user?.email,
