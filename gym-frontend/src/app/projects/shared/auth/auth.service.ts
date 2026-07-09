@@ -3,22 +3,21 @@ import { Router } from "@angular/router";
 import { Observable, tap, switchMap, map, of } from "rxjs";
 import { ApiService } from "@/app/core/services/api-service.service";
 import { AuthState, AuthUser, NavItem } from "../../../core/services/auth.state";
-import { User } from "../../superadmin/users/users.model";
 import { Tenant } from "../../superadmin/clients/clients.model";
 
 // ── API response wrapper ───────────────────────────────────────────────────
-interface ApiResponse<T = void> {
+type ApiResponse<T = void> = {
   success: boolean;
   name: string;
   message: { en: string; ar: string };
   data?: T;
-}
+};
 
-interface TokenData {
+type TokenData = {
   accessToken: string;
   accessExpires: number;
-  mustChangePassword?: boolean
-}
+  mustChangePassword?: boolean;
+};
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -29,7 +28,7 @@ export class AuthService {
   readonly API = `/auth`;
 
   // ── LOGIN ──────────────────────────────────────────────────────────────────
-  login(body: { email: string; password: string ,subdomain:string }): Observable<ApiResponse<AuthUser> | null> {
+  login(body: { email: string; password: string, subdomain: string }): Observable<ApiResponse<AuthUser> | null> {
     return this.http
       .post<ApiResponse<TokenData>>(`${this.API}/login`, body, { withCredentials: true })
       .pipe(
@@ -57,10 +56,9 @@ export class AuthService {
             (a, b) => (a.order ?? 0) - (b.order ?? 0)
           );
 
-          const data: any = response?.data;
+          const data = response?.data;
           if (data) {
             this.state.setUser({ ...data, modules });
-
           }
         }),
       );
@@ -73,16 +71,14 @@ export class AuthService {
       .pipe(
         tap((response) => {
           if (response?.data) {
-
-            this.state.setTenant(response?.data);
+            this.state.setTenant(response.data);
           }
-
         }),
       );
   }
 
   // ── REGISTER ───────────────────────────────────────────────────────────────
-  register(body: any): Observable<ApiResponse<{ userId: string }>> {
+  register(body: Record<string, unknown>): Observable<ApiResponse<{ userId: string }>> {
     return this.http
       .post<ApiResponse<{ userId: string }>>(`${this.API}/signup`, body);
   }
