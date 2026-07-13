@@ -7,11 +7,13 @@ type ClientPlanKey = 'free' | 'starter' | 'pro' | 'enterprise';
 
 interface ClientPersonalSummary {
   name?: string;
+  phone?: string
   subdomain?: string;
   country?: string;
   timezone?: string;
-  adminEmail?: string;
-  logoUrl?:string;
+  email?: string;
+  logoUrl?: string;
+  status?: string;
 }
 
 interface ClientSubscriptionSummary {

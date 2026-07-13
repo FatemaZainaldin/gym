@@ -32,7 +32,7 @@ export class CreateTenantDTO {
 
     @IsString()
     @IsNotEmpty()
-    adminEmail?: string;
+    email?: string;
 
 
     @IsEnum(TenantStatus)

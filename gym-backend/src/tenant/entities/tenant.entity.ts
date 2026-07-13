@@ -2,17 +2,17 @@ import { Column, Entity, Index } from 'typeorm';
 import { BaseEntity } from '../../common/entities/base.entity';
 
 export enum TenantStatus {
-  ACTIVE    = 'active',
-  TRIAL     = 'trial',
+  ACTIVE = 'active',
+  TRIAL = 'trial',
   SUSPENDED = 'suspended',
-  INACTIVE  = 'inactive',
-  PENDING   = 'pending',
+  INACTIVE = 'inactive',
+  PENDING = 'pending',
 }
 
 export enum SubscriptionPlan {
-  FREE       = 'free',
-  STARTER    = 'starter',
-  PRO        = 'pro',
+  FREE = 'free',
+  STARTER = 'starter',
+  PRO = 'pro',
   ENTERPRISE = 'enterprise',
 }
 
@@ -39,12 +39,12 @@ export class Tenant extends BaseEntity {
   phone?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  adminEmail?: string;
+  email?: string;
 
-  @Column({ type: 'enum', enum: TenantStatus, default: TenantStatus.TRIAL , enumName: 'tenant_status_enum',  })
+  @Column({ type: 'enum', enum: TenantStatus, default: TenantStatus.TRIAL, enumName: 'tenant_status_enum', })
   status: TenantStatus;
 
-  @Column({ type: 'enum', enum: SubscriptionPlan, default: SubscriptionPlan.FREE, enumName: 'tenant_plan_enum',  })
+  @Column({ type: 'enum', enum: SubscriptionPlan, default: SubscriptionPlan.FREE, enumName: 'tenant_plan_enum', })
   plan: SubscriptionPlan;
 
   @Column({ type: 'timestamptz', nullable: true })
@@ -62,5 +62,5 @@ export class Tenant extends BaseEntity {
   @Column({ type: 'jsonb', default: '{}' })
   featureFlags: Record<string, boolean>;
 
-  
+
 }

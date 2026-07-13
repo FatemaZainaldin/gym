@@ -2,8 +2,9 @@
   @for (section of navigation(); track section.id) {
   <div class="flex flex-col px-4">
     <!-- Section title -->
-    <div class="px-2.5 py-1.5 text-md font-normal text-neutral-500  " [ngClass]="{'font-semibold text-primary-500': isRouteActive(section), 
-      'uppercase text-sm text-gray-100  ' :section.children ,
+    <div class="px-2.5 py-1.5 text-md font-normal text-neutral-400  " 
+    [ngClass]="{'font-semibold text-primary-500': isRouteActive(section), 
+      'uppercase text-md text-neutral-400 font-light' :section.children ,
        'text-neutral-700 cursor-pointer': !section.children}" (click)="onSectionClick(section)">
       {{ section.label }}
 
@@ -30,15 +31,15 @@
   @for (node of nodes; track node.id) {
   <li cdkMonitorElementFocus ngTreeItem [parent]="parent" [value]="node.id" [label]="node.label"
     [disabled]="node.disabled" [selectable]="!node.children" [(expanded)]="node.expanded" #treeItem="ngTreeItem">
-    <a [routerLink]="node.route" [routerLinkActive]="node.route ? 'bg-neutral-700/10 dark:bg-neutral-300/10' : ''"
+    <a [routerLink]="node.route" [routerLinkActive]="node.route ? 'text-md font-semibold bg-neutral-700/10 dark:bg-neutral-300/10' : ''"
       [routerLinkActiveOptions]="node.activeOptions ?? { exact: true }" (click)="handleItemClick($event, node)"
-      class="navigation-item flex cursor-pointer items-center gap-x-2 rounded-lg px-4 py-2 select-none hover:bg-neutral-700/10 dark:hover:bg-neutral-300/10"
+      class=" navigation-item flex cursor-pointer items-center gap-x-2 rounded-lg px-4 py-2 select-none text-neutral-600 hover:bg-primary-700/10 dark:hover:bg-neutral-300/10"
       [class.bg-neutral-700/10]="isRouteActive(node)" [class.dark:bg-neutral-300/10]="isRouteActive(node)">
       @if (node.icon) {
-      <mat-icon class="pointer-events-none size-4" [svgIcon]="node.icon" />
+      <mat-icon class="pointer-events-none size-5 text-neutral-700" [svgIcon]="node.icon" />
       }
 
-      <div class="flex flex-auto flex-col font-medium">
+      <div class="flex flex-auto flex-col font-medium text-md">
         {{ node.label }}
 
         @if (node.description) {

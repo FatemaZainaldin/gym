@@ -70,14 +70,21 @@
       <div>
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="adminEmail" placeholder="Email" />
+          <input matInput type="email" formControlName="email" placeholder="Email" />
           <mat-error>
-            <form-error [control]="formGroup.get('adminEmail')" field="Email"></form-error>
+            <form-error [control]="formGroup.get('email')" field="Email"></form-error>
           </mat-error>
         </mat-form-field>
       </div>
 
+
       <div class="sm:col-span-2">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Internal Notes</mat-label>
+          <textarea matInput formControlName="internalNotes" rows="3" placeholder="Internal Notes"></textarea>
+        </mat-form-field>
+      </div>
+      <div>
         <mat-label class="mb-4">Logo*</mat-label>
         <div class="relative overflow-hidden w-full z-50">
           <app-file-upload formControlName="logoUrl" accept="image/*" [maxSizeMb]="2" uploadUrl="/upload" />
@@ -87,14 +94,6 @@
         </div>
       </div>
 
-
-
-      <div class="sm:col-span-2">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Internal Notes</mat-label>
-          <textarea matInput formControlName="internalNotes" rows="3" placeholder="Internal Notes"></textarea>
-        </mat-form-field>
-      </div>
 
     </div>
   </div>

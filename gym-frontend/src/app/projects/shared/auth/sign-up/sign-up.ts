@@ -14,6 +14,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../auth.service";
+import { LogoComponent } from "@/app/shared/components/logo/logo.component";
 
 @Component({
   selector: "auth-sign-up",
@@ -27,7 +28,8 @@ import { AuthService } from "../auth.service";
     MatIconModule,
     MatCheckboxModule,
     FormField,
-  ],
+    LogoComponent
+],
 })
 export default class AuthSignUp {
 

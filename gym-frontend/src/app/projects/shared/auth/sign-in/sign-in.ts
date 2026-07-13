@@ -12,9 +12,10 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { RouterLink } from "@angular/router";
-import { ToastService } from "@/app/core/toast/toast.service";
-import { AuthService } from "../auth.service";
 import { AuthState } from "@/app/core/services/auth.state";
+import { ToastService } from "@/app/core/toast/toast.service";
+import { LogoComponent } from "@/app/shared/components/logo/logo.component";
+import { AuthService } from "../auth.service";
 
 @Component({
   selector: "auth-sign-in",
@@ -28,6 +29,7 @@ import { AuthState } from "@/app/core/services/auth.state";
     MatCheckboxModule,
     FormField,
     MatDivider,
+    LogoComponent
 
   ],
 })

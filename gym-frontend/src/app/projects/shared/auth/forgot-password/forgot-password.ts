@@ -14,6 +14,7 @@ import { MatInputModule } from "@angular/material/input";
 import { Router } from "@angular/router";
 import { AuthService } from "../auth.service";
 import { ToastService } from "@/app/core/toast/toast.service";
+import { LogoComponent } from "@/app/shared/components/logo/logo.component";
 
 @Component({
   selector: "auth-forgot-password",
@@ -26,7 +27,8 @@ import { ToastService } from "@/app/core/toast/toast.service";
     MatCheckboxModule,
     FormField,
     MatCard,
-  ],
+    LogoComponent
+],
 })
 export default class AuthForgotPassword {
   // Dependencies

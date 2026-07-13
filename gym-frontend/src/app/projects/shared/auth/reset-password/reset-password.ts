@@ -16,6 +16,7 @@ import { Router } from "@angular/router";
 import { ToastService } from "@/app/core/toast/toast.service";
 import { AuthService } from "../auth.service";
 import { AuthState } from "@/app/core/services/auth.state";
+import { LogoComponent } from "@/app/shared/components/logo/logo.component";
 
 @Component({
   selector: "auth-reset-password",
@@ -28,7 +29,8 @@ import { AuthState } from "@/app/core/services/auth.state";
     MatCheckboxModule,
     FormField,
     MatCard,
-  ],
+    LogoComponent
+],
 })
 export default class AuthResetPassword {
   // Dependencies

@@ -18,7 +18,7 @@ import { ClientsService } from '../clients.service';
     MatIconModule,
     MatProgressSpinnerModule,
     ConfirmStepComponent,
-    
+
 
   ],
   selector: 'app-clients-view',
@@ -31,7 +31,7 @@ export class ClientsViewComponent implements OnInit {
   subscriptionGroup!: FormGroup;
 
   isSubmitting = false;
-  isEditMode = false;
+  isCopyMode = false;
 
   id: string | null = null;
 
@@ -44,6 +44,13 @@ export class ClientsViewComponent implements OnInit {
   ngOnInit(): void {
     this._buildForm();
     this.id = this.route.snapshot.paramMap.get('id');
+    const segments = this.route.snapshot.url.map(s => s.path);
+
+    const isCopy :any = segments?.includes('new') && this.id;
+    const isEdit = segments?.includes('edit');
+
+    this.isCopyMode = isCopy;
+
     this.getClientById(this.id!);
   }
 
@@ -55,8 +62,10 @@ export class ClientsViewComponent implements OnInit {
       timezone: ['', [Validators.required, Validators.maxLength(100)]],
       logoUrl: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.maxLength(20)]],
-      adminEmail: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
+      email: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
       internalNotes: [''],
+      status: [''],
+
     });
 
     this.subscriptionGroup = this._fb.group({
@@ -77,14 +86,15 @@ export class ClientsViewComponent implements OnInit {
       next: (res) => {
         res = res?.data;
         this.detailsGroup.patchValue({
-          name: this.isEditMode ? res.name : `${res.name} COPY`,
-          subdomain: this.isEditMode ? res.subdomain : `${res.subdomain} COPY`,
+          name: !this.isCopyMode ? res.name : `${res.name} COPY`,
+          subdomain: !this.isCopyMode ? res.subdomain : `${res.subdomain} COPY`,
           country: res.country,
           timezone: res.timezone,
           logoUrl: res.logoUrl,
           phone: res.phone,
-          adminEmail: this.isEditMode ? res.adminEmail : null,
+          email: !this.isCopyMode ? res.email : `${res.name} COPY`,
           internalNotes: res.internalNotes,
+          status: res.status
         });
         this.subscriptionGroup.patchValue({
           plan: res.plan,

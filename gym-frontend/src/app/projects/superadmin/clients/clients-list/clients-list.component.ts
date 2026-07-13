@@ -35,7 +35,7 @@ export class ClientsListComponent implements OnInit {
       { key: 'name', label: 'Name', sortable: true, filterable: false },
       { key: 'subdomain', label: 'Subdomain', sortable: true, filterable: false },
 
-      { key: 'adminEmail', label: 'Email', sortable: true, filterable: false },
+      { key: 'email', label: 'Email', sortable: true, filterable: false },
       { key: 'phone', label: 'Phone', sortable: true, filterable: false },
       {
         key: 'country', label: 'country', sortable: true, filterable: true, filterType: 'select',
@@ -220,21 +220,21 @@ export class ClientsListComponent implements OnInit {
 
   }
 
-  
+
   onResend(row: Tenant) {
     if (!row?.id) return;
     this.loading.set(true);
-     this.clientsService.resendClientCredentials(row?.id).subscribe({
-          next: (res) => {
-            this.loading.set(false);
-            this.toast.showMessage(res?.message, 'success');
-            this.getClientsList();
-          },
-          error: (err) => {
-            this.toast.showMessage(err?.error?.message, 'error');
-            this.loading.set(false);
-          }
-        });
+    this.clientsService.resendClientCredentials(row?.id).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        this.toast.showMessage(res?.message, 'success');
+        this.getClientsList();
+      },
+      error: (err) => {
+        this.toast.showMessage(err?.error?.message, 'error');
+        this.loading.set(false);
+      }
+    });
   }
 
 

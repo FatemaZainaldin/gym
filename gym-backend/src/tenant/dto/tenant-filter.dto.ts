@@ -23,7 +23,7 @@ export class TenantFilterDTO extends PaginationDto {
 
     @IsString()
     @IsOptional()
-    adminEmail?: string;
+    email?: string;
 
 
     @IsEnum(TenantStatus)

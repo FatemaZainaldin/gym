@@ -75,8 +75,9 @@ export class ClientsCreateComponent implements OnInit {
       timezone: ['', [Validators.required, Validators.maxLength(100)]],
       logoUrl: ['', [Validators.required]],
       phone: ['', [Validators.required, Validators.maxLength(20)]],
-      adminEmail: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
+      email: ['', [Validators.required, Validators.maxLength(255), Validators.email]],
       internalNotes: [''],
+      status:['']
     });
 
     this.subscriptionGroup = this._fb.group({
@@ -104,8 +105,9 @@ export class ClientsCreateComponent implements OnInit {
           timezone: res.timezone,
           logoUrl: res.logoUrl,
           phone: res.phone,
-          adminEmail: this.isEditMode ? res.adminEmail : null,
+          email: this.isEditMode ? res.email : null,
           internalNotes: res.internalNotes,
+          status:res.status
         });
         this.subscriptionGroup.patchValue({
           plan: res.plan,
@@ -137,7 +139,7 @@ export class ClientsCreateComponent implements OnInit {
       next: (res) => {
         this.isSubmitting = false;
         this.toast.showMessage(res?.message, 'success');
-       this.home();
+        this.home();
       },
       error: (err) => {
         this.isSubmitting = false;

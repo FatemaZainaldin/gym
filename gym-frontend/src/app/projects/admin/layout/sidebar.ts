@@ -3,10 +3,11 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Navigation } from '@/app/core/navigation/navigation.component';
 import { User } from '@/app/projects/admin/layout/user';
+import { LogoComponent } from '@/app/shared/components/logo/logo.component';
 
 @Component({
   selector: 'admin-sidebar',
-  imports: [Navigation, User, MatButton, MatIcon],
+  imports: [Navigation, User, MatButton, MatIcon, LogoComponent],
   host: {
     class: 'flex w-full flex-auto flex-col',
   },
@@ -17,7 +18,7 @@ import { User } from '@/app/projects/admin/layout/user';
     
 
  <div class="flex justify-center items-center w-full">
-        <img class="w-20" src="/assets/logo.png" alt="بدن logo" />
+  <app-logo></app-logo>
       </div>
 
     </div>

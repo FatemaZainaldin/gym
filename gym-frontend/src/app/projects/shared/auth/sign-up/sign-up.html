@@ -6,7 +6,7 @@
 
       <!-- Logo -->
       <div class="flex justify-center">
-        <img class="w-32" src="/assets/logo.png" alt="بدن logo" />
+        <app-logo></app-logo>
       </div>
 
       <!-- Link -->
@@ -55,9 +55,9 @@
               }
             </mat-error>
           </mat-form-field>
-          <mat-form-field class="w-full" >
+          <mat-form-field class="w-full">
             <mat-label>Role</mat-label>
-            <input matInput id="role" [formField]="signUpForm.role"  />
+            <input matInput id="role" [formField]="signUpForm.role" />
             <mat-error>
               @if (signUpForm.role().touched() && signUpForm.role().invalid()) {
               @for (error of signUpForm.role().errors(); track error) {

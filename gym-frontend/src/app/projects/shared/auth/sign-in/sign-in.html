@@ -3,11 +3,10 @@
   <!-- LEFT — form -->
   <div class="flex items-center justify-center bg-white p-8 dark:bg-neutral-950 w-2/5 flex-shrink-0">
     <div class="flex w-full max-w-sm flex-col">
-<div class=" justify-center ietms-center flex w-full ">
+      <div class=" justify-center ietms-center flex w-full ">
         <!-- <img class="w-35" src="/assets/logo.png" alt="FitPro logo"/> -->
-                <img class="w-35" [src]="state.tenant()?.logoUrl" alt="FitPro logo"/>
-
-</div>
+        <app-logo></app-logo>
+      </div>
 
       <div class="mt-8 mb-4 text-4xl font-semibold ">
         Login
@@ -22,30 +21,28 @@
 
           <mat-form-field class="w-full">
             <mat-label>Email address</mat-label>
-            <input matInput id="email" [formField]="signInForm.email"/>
+            <input matInput id="email" [formField]="signInForm.email" />
             <mat-error>
               @if (signInForm.email().touched() && signInForm.email().invalid()) {
-                @for (error of signInForm.email().errors(); track error) {
-                  {{ error.message }}
-                }
+              @for (error of signInForm.email().errors(); track error) {
+              {{ error.message }}
+              }
               }
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="fill" class="w-full">
             <mat-label>Password</mat-label>
-            <input matInput id="password" type="password"
-              [formField]="signInForm.password" #passwordField/>
+            <input matInput id="password" type="password" [formField]="signInForm.password" #passwordField />
             <button matIconButton type="button" matSuffix
               (click)="passwordField.type = passwordField.type === 'password' ? 'text' : 'password'">
-              <mat-icon class="size-5"
-                [svgIcon]="passwordField.type === 'password' ? 'eye' : 'eye-off'"/>
+              <mat-icon class="size-5" [svgIcon]="passwordField.type === 'password' ? 'eye' : 'eye-off'" />
             </button>
             <mat-error>
               @if (signInForm.password().touched() && signInForm.password().invalid()) {
-                @for (error of signInForm.password().errors(); track error) {
-                  {{ error.message }}
-                }
+              @for (error of signInForm.password().errors(); track error) {
+              {{ error.message }}
+              }
               }
             </mat-error>
           </mat-form-field>
@@ -60,15 +57,14 @@
           </a>
         </div>
 
-        <button type="submit" matButton="filled" class="mt-6 w-full"
-          [disabled]="signInForm().invalid()">
+        <button type="submit" matButton="filled" class="mt-6 w-full" [disabled]="signInForm().invalid()">
           Login
         </button>
 
         <div class="mt-6 flex items-center gap-x-4">
-          <mat-divider class="flex-auto"/>
+          <mat-divider class="flex-auto" />
           <span class="text-sm text-neutral-500">Or continue with</span>
-          <mat-divider class="flex-auto"/>
+          <mat-divider class="flex-auto" />
         </div>
 
         <div class="mt-4 flex items-center gap-x-3">
@@ -83,12 +79,7 @@
 
   <!-- RIGHT — image takes 3/5 -->
   <div class="hidden md:block w-3/5 flex-shrink-0">
-    <img
-      src="/assets/gym_login_man.png"
-      alt=""
-      class="h-full w-full object-cover"
-      aria-hidden="true"
-    />
+    <img src="/assets/gym_login_man.png" alt="" class="h-full w-full object-cover" aria-hidden="true" />
   </div>
 
 </div>
